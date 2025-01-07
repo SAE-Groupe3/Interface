@@ -1,3 +1,39 @@
+-- Suppression des données dans la table Action
+DELETE FROM Action;
+
+-- Suppression des données dans la table TypeAction
+DELETE FROM TypeAction;
+
+-- Suppression des données dans la table Stage
+DELETE FROM Stage;
+
+-- Suppression des données dans la table Inscription
+DELETE FROM Inscription;
+
+-- Suppression des données dans la table Tuteur_Entreprise
+DELETE FROM Tuteur_Entreprise;
+
+-- Suppression des données dans la table Administrateur
+DELETE FROM Administrateur;
+
+-- Suppression des données dans la table Enseignant
+DELETE FROM Enseignant;
+
+-- Suppression des données dans la table Secretaire
+DELETE FROM Secretaire;
+
+-- Suppression des données dans la table Etudiant
+DELETE FROM Etudiant;
+
+-- Suppression des données dans la table Departement
+DELETE FROM Departement;
+
+-- Suppression des données dans la table Entreprise
+DELETE FROM Entreprise;
+
+-- Suppression des données dans la table Utilisateur
+DELETE FROM Utilisateur;
+
 -- Insertion dans la table Utilisateur
 INSERT INTO Utilisateur (nom, prenom, email, telephone, login, motdepasse)
 VALUES 
