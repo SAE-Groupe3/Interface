@@ -62,7 +62,7 @@ VALUES
 INSERT INTO TypeAction (libelle, description)
 VALUES 
     ('Réunion', 'Réunion de suivi de projet'),
-    ('Rapport', 'Rédaction d\'un rapport de stage');
+    ('Rapport', "Rédaction d\'un rapport de stage");
 
 -- Insertion dans la table Action
 INSERT INTO Action (id_TypeAction, date_realisation, lienDocument)
