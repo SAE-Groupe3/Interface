@@ -55,7 +55,7 @@ VALUES
 -- Insertion dans la table Stage
 INSERT INTO Stage (id_Etudiant, id_TuteurEntreprise, id_Enseignant, date_debut, date_fin, sujet, lieu_soutenance, date_soutenance)
 VALUES 
-    (1, 1, 1, '2024-06-01', '2024-12-01', 'Développement d\'une application web', 'Salle A', '2024-12-15'),
+    (1, 1, 1, '2024-06-01', '2024-12-01', "Développement d\'une application web", 'Salle A', '2024-12-15'),
     (2, 2, 2, '2024-06-01', '2024-12-01', 'Stratégies marketing digital', 'Salle B', '2024-12-16');
 
 -- Insertion dans la table TypeAction
