@@ -1,3 +1,18 @@
+-- Supprimer les tables dans l'ordre inverse des dépendances
+DROP TABLE IF EXISTS Action;
+DROP TABLE IF EXISTS TypeAction;
+DROP TABLE IF EXISTS Stage;
+DROP TABLE IF EXISTS Inscription;
+DROP TABLE IF EXISTS Etudiant;
+DROP TABLE IF EXISTS Tuteur_Entreprise;
+DROP TABLE IF EXISTS Administrateur;
+DROP TABLE IF EXISTS Enseignant;
+DROP TABLE IF EXISTS Secretaire;
+DROP TABLE IF EXISTS Departement;
+DROP TABLE IF EXISTS Entreprise;
+DROP TABLE IF EXISTS Utilisateur;
+DROP TABLE IF EXISTS Semestre;
+
 -- Table Utilisateur
 CREATE TABLE Utilisateur (
     id SERIAL PRIMARY KEY,

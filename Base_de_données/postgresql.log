@@ -200,3 +200,20 @@
 	VALUES 
 	    (1, 1, 1),
 	    (2, 2, 2);
+2025-01-07 16:18:24.135 CET [2917] LOG:  checkpoint starting: time
+2025-01-07 16:18:28.932 CET [2917] LOG:  checkpoint complete: wrote 48 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.788 s, sync=0.006 s, total=4.798 s; sync files=43, longest=0.002 s, average=0.001 s; distance=18 kB, estimate=3384 kB; lsn=0/1A03D78, redo lsn=0/1A03D40
+2025-01-07 16:30:34.692 CET [3887] ERROR:  syntax error at or near "/" at character 1
+2025-01-07 16:30:34.692 CET [3887] STATEMENT:  /q
+	ls
+	;
+2025-01-07 16:30:44.837 CET [3887] ERROR:  relation "semestre" already exists
+2025-01-07 16:30:44.837 CET [3887] STATEMENT:  CREATE TABLE Semestre (
+	    numSemestre INT PRIMARY KEY,
+	    annee INT NOT NULL
+	);
+2025-01-07 16:30:58.104 CET [3887] ERROR:  duplicate key value violates unique constraint "semestre_pkey"
+2025-01-07 16:30:58.104 CET [3887] DETAIL:  Key (numsemestre)=(1) already exists.
+2025-01-07 16:30:58.104 CET [3887] STATEMENT:  INSERT INTO Semestre (numSemestre, annee)
+	VALUES 
+	    (1, 2024),
+	    (2, 2024);
