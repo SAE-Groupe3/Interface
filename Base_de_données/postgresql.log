@@ -1,0 +1,18 @@
+2025-01-07 15:43:24.127 CET [2916] LOG:  starting PostgreSQL 16.4 (Postgres.app) on aarch64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.102), 64-bit
+2025-01-07 15:43:24.130 CET [2916] LOG:  listening on IPv6 address "::1", port 5432
+2025-01-07 15:43:24.130 CET [2916] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-01-07 15:43:24.131 CET [2916] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-01-07 15:43:24.136 CET [2919] LOG:  database system was shut down at 2025-01-07 15:43:23 CET
+2025-01-07 15:43:24.143 CET [2916] LOG:  database system is ready to accept connections
+2025-01-07 15:43:37.574 CET [3258] ERROR:  syntax error at or near "s" at character 1
+2025-01-07 15:43:37.574 CET [3258] STATEMENT:  s
+	ls
+	;
+2025-01-07 15:44:22.087 CET [3319] FATAL:  database "SAE" does not exist
+2025-01-07 15:44:42.881 CET [3343] ERROR:  syntax error at or near "/" at character 1
+2025-01-07 15:44:42.881 CET [3343] STATEMENT:  /i
+	;
+2025-01-07 15:48:24.104 CET [2917] LOG:  checkpoint starting: time
+2025-01-07 15:50:03.588 CET [2917] LOG:  checkpoint complete: wrote 982 buffers (6.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=99.452 s, sync=0.030 s, total=99.485 s; sync files=317, longest=0.002 s, average=0.001 s; distance=4583 kB, estimate=4583 kB; lsn=0/19800A8, redo lsn=0/1980070
+2025-01-07 16:03:24.601 CET [2917] LOG:  checkpoint starting: time
+2025-01-07 16:03:36.880 CET [2917] LOG:  checkpoint complete: wrote 116 buffers (0.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=12.252 s, sync=0.023 s, total=12.279 s; sync files=97, longest=0.002 s, average=0.001 s; distance=502 kB, estimate=4175 kB; lsn=0/19FDB10, redo lsn=0/19FDAD8
