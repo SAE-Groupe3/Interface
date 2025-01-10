@@ -10,30 +10,6 @@ Avant de commencer, assurez-vous d'avoir installé :
 - **PostgreSQL**
 - **Git**
 
-## 📂 Structure du projet
-```
-/gestion-stages/
-├── /config/
-│   └── database.php          # Configuration de la base de données
-├── /public/
-│   ├── index.php             # Point d'entrée principal
-│   └── /frontend/            # Dossier contenant le frontend
-│       ├── index.html        # Page d'accueil
-│       ├── style.css         # Fichier CSS
-│       └── app.js            # Fichier JavaScript pour les appels API
-├── /routes/
-│   ├── utilisateurs.php      # Routes pour la gestion des utilisateurs
-│   ├── stages.php            # Routes pour la gestion des stages
-│   └── actions.php           # Routes pour la gestion des actions
-├── /models/
-│   ├── Utilisateur.php       # Modèle de la table Utilisateur
-│   ├── Stage.php             # Modèle de la table Stage
-│   └── Action.php            # Modèle de la table Action
-├── /utils/
-│   └── Response.php          # Classe utilitaire pour les réponses JSON
-└── .env                      # Fichier de configuration des variables d'environnement
-```
-
 ## ⚙️ Installation
 
 ### 1️⃣ **Cloner le dépôt**
