@@ -1,0 +1,16 @@
+/* Forcer le footer à rester en bas de la page */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow: 1;
+    padding-bottom: 4rem; /* Ajuste la marge en bas */
+}
+
+/* Optionnel : Ajuste la marge du footer */
+footer {
+    padding-top: 2rem;
+}

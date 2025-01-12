@@ -18,4 +18,4 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 COPY ./app /var/www/html
 
 # Commande de démarrage
-CMD [ "apache2-foreground"]
+CMD ["apache2-foreground"]

@@ -1,4 +1,6 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- Fichier SQL pour la gestion des stages à l'IUT de Villetaneuse basé sur le MCD fourni
+
 
 -- 1. Création de la table Utilisateur
 CREATE TABLE Utilisateur (
@@ -8,7 +10,8 @@ CREATE TABLE Utilisateur (
     email VARCHAR(100) UNIQUE NOT NULL,
     telephone VARCHAR(20),
     login VARCHAR(50) NOT NULL,
-    motdepasse VARCHAR(255) NOT NULL
+    motdepasse VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'etudiant' -- Ajout de la colonne role
 );
 
 -- 2. Création de la table Entreprise
@@ -102,16 +105,17 @@ CREATE TABLE Administrateur (
     Id_Administrateur SERIAL PRIMARY KEY
 );
 
--- Insertion de quelques données de test
-INSERT INTO Utilisateur (nom, prenom, email, telephone, login, motdepasse) VALUES
-('Dupont', 'Jean', 'jean.dupont@example.com', '0601020304', 'jdupont', 'password123'),
-('Martin', 'Claire', 'claire.martin@example.com', '0605060708', 'cmartin', 'password123');
+
+-- Insertion de quelques utilisateurs de test avec mot de passe haché
+INSERT INTO Utilisateur (nom, prenom, email, telephone, login, motdepasse, role) VALUES
+('Dupont', 'Jean', 'jean.dupont@example.com', '0601020304', 'jdupont', crypt('password123', gen_salt('bf')), 'admin'),
+('Martin', 'Claire', 'claire.martin@example.com', '0605060708', 'cmartin', crypt('password123', gen_salt('bf')), 'tuteur');
 
 INSERT INTO Entreprise (adresse, code_postal, ville, indicationVisite, tel) VALUES
 ('123 Rue de Paris', '75001', 'Paris', '1er étage', '0147253648');
 
 INSERT INTO Stage (id_etudiant, id_tuteur_pedagogique, id_tuteur_entreprise, date_debut, date_fin, mission) VALUES
-(1, 2, 1, '2025-01-15', '2025-03-15', 'Développement dune application web');
+(1, 2, 1, '2025-01-15', '2025-03-15', 'Développement d une application web');
 
 INSERT INTO TypeAction (libelle, Executant, Destinataire, delaiEnJours, ReferenceDelai, requiertDoc, LienModeleDoc) VALUES
-('Compte rendu dinstallation', 'Etudiant', 'Tuteur pédagogique', 7, 'date_debut', TRUE, 'modele_compte_rendu.pdf');
+('Compte rendu d installation', 'Etudiant', 'Tuteur pédagogique', 7, 'date_debut', TRUE, 'modele_compte_rendu.pdf');

@@ -1,27 +1,26 @@
 <?php
-// models/Utilisateur.php
-
 class Utilisateur {
-    private $conn;
-    private $table_name = "Utilisateur";
+    private $pdo;
 
-    public $id;
-    public $nom;
-    public $prenom;
-    public $email;
-    public $telephone;
-    public $login;
-    public $motdepasse;
-
-    public function __construct($db) {
-        $this->conn = $db;
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
     }
 
-    public function getAll() {
-        $query = "SELECT * FROM " . $this->table_name;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
+    public function verifierIdentifiants($email, $password) {
+        $query = $this->pdo->prepare("
+            SELECT id, nom, prenom, email, telephone, login, role 
+            FROM utilisateur 
+            WHERE email = :email 
+            AND motdepasse = crypt(:password, motdepasse)
+        ");
+    
+        $query->execute([
+            'email' => $email,
+            'password' => $password
+        ]);
+    
+        return $query->fetch(PDO::FETCH_ASSOC);
     }
+    
+    
 }
-?>
