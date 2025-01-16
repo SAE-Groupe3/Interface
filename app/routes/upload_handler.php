@@ -5,13 +5,11 @@ if (isset($_FILES['file'])) {
     $file = $_FILES['file'];
     $stageId = isset($_POST['stage_id']) ? $_POST['stage_id'] : null;
 
-    // Ajoutons des messages de debug
-    var_dump("Fichier détecté :", $file);
-    var_dump("ID du stage :", $stageId);
 
     // Définir les types de fichiers autorisés et la taille maximale
     $allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     $maxSize = 2 * 1024 * 1024; // 2 Mo
+    
 
     if (!in_array($file['type'], $allowedTypes)) {
         $_SESSION['upload_message'] = "Type de fichier non autorisé. Veuillez déposer un PDF ou un DOCX.";
