@@ -11,23 +11,63 @@
 
     <!-- Animation de présentation avec logos -->
     <div class="flex flex-wrap items-center justify-center space-y-8 md:space-y-0 md:space-x-8">
-        <div class="bg-white shadow-md rounded-lg p-8 w-full md:w-1/3 transform hover:scale-105 transition duration-300" data-aos="flip-left">
+        <div class="bg-white shadow-md rounded-lg p-8 w-full md:w-1/3 transform hover:scale-105 transition duration-300 card-motion subtleBounce" data-aos="flip-left">
             <img src="/images/etudiant.svg" alt="Étudiants" class="w-16 h-16 mb-4 mx-auto">
             <h3 class="text-2xl font-bold text-indigo-900 mb-4">Étudiants</h3>
             <p class="text-gray-600">Suivez l'évolution de vos stages, téléchargez les documents et restez en contact avec vos tuteurs.</p>
         </div>
-        <div class="bg-white shadow-md rounded-lg p-8 w-full md:w-1/3 transform hover:scale-105 transition duration-300" data-aos="flip-right">
+        <div class="bg-white shadow-md rounded-lg p-8 w-full md:w-1/3 transform hover:scale-105 transition duration-300 card-motion subtleBounce" data-aos="flip-right">
             <img src="/images/professor.svg" alt="Tuteurs pédagogiques" class="w-16 h-16 mb-4 mx-auto">
             <h3 class="text-2xl font-bold text-indigo-900 mb-4">Tuteurs pédagogiques</h3>
             <p class="text-gray-600">Validez les stages, suivez les progrès des étudiants et organisez les soutenances.</p>
         </div>
-        <div class="bg-white shadow-md rounded-lg p-8 w-full md:w-1/3 transform hover:scale-105 transition duration-300" data-aos="flip-up">
-            <img src="/images/entreprise.svg" alt="Entreprises" class="w-17 h-16 mb-4 mx-auto">
+        <div class="bg-white shadow-md rounded-lg p-8 w-full md:w-1/3 transform hover:scale-105 transition duration-300 card-motion subtleBounce" data-aos="flip-up">
+            <img src="/images/entreprise.svg" alt="Entreprises" class="w-16 h-16 mb-4 mx-auto">
             <h3 class="text-2xl font-bold text-indigo-900 mb-4">Entreprises</h3>
             <p class="text-gray-600">Communiquez avec les étudiants, suivez les missions et participez aux soutenances.</p>
         </div>
     </div>
 </section>
+
+<!-- Section de collaboration améliorée -->
+<section class="container mx-auto px-6 md:px-12 py-16 bg-white shadow-md rounded-lg mt-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <!-- Texte de présentation -->
+        <div class="text-indigo-900 p-8" data-aos="fade-right">
+            <h2 class="text-4xl font-bold mb-6">Collaboration avec l'Université Sorbonne Paris 13</h2>
+            <p class="text-gray-600 text-lg mb-6">
+                Ce projet a été réalisé en partenariat avec l'Université Sorbonne Paris 13 pour offrir une solution moderne de gestion des stages, adaptée aux besoins des étudiants, tuteurs pédagogiques et entreprises partenaires.
+            </p>
+            <ul class="space-y-2">
+                <li class="flex items-center space-x-2">
+                    <span class="text-indigo-600">🧑‍🏫</span>
+                    <span>Partenariat avec les enseignants et étudiants</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                    <span class="text-indigo-600">📈</span>
+                    <span>Soutien pour la réussite des stages</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                    <span class="text-indigo-600">🔗</span>
+                    <span>Communication facilitée entre les parties</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Logo de l'université -->
+        <div class="flex justify-center p-8" data-aos="fade-left">
+            <img src="/images/logo-paris13.webp" alt="Université Sorbonne Paris Nord" class="max-w-xs md:max-w-sm rounded-lg shadow-lg">
+        </div>
+    </div>
+</section>
+
+<!-- Ajout de padding supplémentaire pour éviter que le footer soit collé -->
+<div class="pb-20"></div>
+
+
+
+
+
 
 <!-- Section FAQ -->
 <section id="faq" class="bg-gray-100 py-12 pb-12" data-aos="fade-up">

@@ -21,10 +21,12 @@ if ($uri === 'favicon.ico') {
 
     
 
-    <!-- Contenu principal avec padding bas -->
-    <main class="flex-grow pb-12">
-        <?php
+    
 
+    <!-- Contenu principal avec padding bas -->
+    <main class="flex-grow pb-20 mb-20">
+        <?php
+        
         // Gestion des routes
         $uriParts = explode('?', $uri); // Séparer le chemin de la query string
         $path = $uriParts[0]; // Utiliser le chemin sans les paramètres
@@ -56,7 +58,21 @@ if ($uri === 'favicon.ico') {
             case 'logout':
                 require_once '../routes/logout.php';
                 break;
+
+            case 'upload':
+                include '../views/upload.php';
+                break;
             
+            case 'upload-handler':
+                include '../routes/upload_handler.php';
+                break;
+            
+            case 'utilisateurs':
+                // Liste des utilisateurs
+                require_once '../routes/utilisateurs.php';
+                break;
+
+
             case 'dashboard':
                 if (!isset($_SESSION['utilisateur'])) {
                         header('Location: /login');
@@ -78,5 +94,7 @@ if ($uri === 'favicon.ico') {
 
     <!-- Footer -->
     <?php include 'frontend/components/footer.php'; ?>
+
+    
 
 </div>

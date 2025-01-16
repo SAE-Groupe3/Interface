@@ -8,9 +8,13 @@
     <!-- Tailwind CSS -->
     <link href="/frontend/output.css" rel="stylesheet">
 
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
     <!-- AOS Animation Library -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/assets/js/login.js" defer></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -20,5 +24,7 @@
             });
         });
     </script>
+    <script src="/assets/js/navbar.js" defer></script>
+
 </head>
 <body class="bg-gray-100 text-gray-800">

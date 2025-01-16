@@ -1,12 +1,28 @@
 <?php
 require_once '../config/db.php';
+require_once '../models/Utilisateur.php';
 
-// Route pour afficher les utilisateurs
-$query = $pdo->query("SELECT * FROM Utilisateur");
-
-$utilisateurs = $query->fetchAll(PDO::FETCH_ASSOC);
-
-echo "<h2>Liste des utilisateurs</h2>";
-foreach ($utilisateurs as $utilisateur) {
-    echo "<p>" . $utilisateur['nom'] . " " . $utilisateur['prenom'] . " (" . $utilisateur['email'] . ")</p>";
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['utilisateur'])) {
+    header('Location: /login');
+    exit();
 }
+
+// Créer une instance de Utilisateur
+$utilisateurModel = new Utilisateur($pdo);
+
+// Vérification du rôle de l'utilisateur connecté
+$utilisateur = $_SESSION['utilisateur'];
+$role = $utilisateur['role'];
+
+if ($role === 'etudiant') {
+    // Si c'est un étudiant, récupérer uniquement les tuteurs
+    $utilisateurs = $utilisateurModel->getTuteurs();
+} else {
+    // Sinon, récupérer tous les utilisateurs
+    $utilisateurs = $utilisateurModel->getAllUtilisateurs();
+}
+
+// Inclure la vue
+require_once '../views/utilisateurs/liste.php';
+        

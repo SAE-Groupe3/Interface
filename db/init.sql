@@ -105,6 +105,16 @@ CREATE TABLE Administrateur (
     Id_Administrateur SERIAL PRIMARY KEY
 );
 
+-- Création de la table Fichiers
+CREATE TABLE Fichiers (
+    id SERIAL PRIMARY KEY,
+    id_stage INT NOT NULL,
+    nom_fichier VARCHAR(255) NOT NULL,
+    chemin_fichier VARCHAR(255) NOT NULL,
+    date_upload TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_stage) REFERENCES Stage(Id_Stage) ON DELETE CASCADE
+);
+
 
 -- Insertion de quelques utilisateurs de test avec mot de passe haché
 INSERT INTO Utilisateur (nom, prenom, email, telephone, login, motdepasse, role) VALUES
@@ -119,3 +129,7 @@ INSERT INTO Stage (id_etudiant, id_tuteur_pedagogique, id_tuteur_entreprise, dat
 
 INSERT INTO TypeAction (libelle, Executant, Destinataire, delaiEnJours, ReferenceDelai, requiertDoc, LienModeleDoc) VALUES
 ('Compte rendu d installation', 'Etudiant', 'Tuteur pédagogique', 7, 'date_debut', TRUE, 'modele_compte_rendu.pdf');
+
+
+INSERT INTO Fichiers (id_stage, nom_fichier, chemin_fichier) VALUES
+(1, 'rapport_stage.pdf', '/uploads/stage_1/rapport_stage.pdf');

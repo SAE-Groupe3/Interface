@@ -1,7 +1,9 @@
 <nav class="bg-indigo-900 text-white px-6 py-4 shadow-md">
     <div class="container mx-auto flex justify-between items-center">
         <!-- Logo -->
-        <a href="/" class="text-xl font-bold">Gestion des Stages</a>
+        <a href="/" class="text-white text-2xl font-bold transform hover:scale-110 transition">
+            Gestion des Stages
+        </a>
 
         <!-- Liens de navigation -->
         <div class="flex space-x-4">
