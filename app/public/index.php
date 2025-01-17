@@ -18,6 +18,7 @@ if ($uri === 'favicon.ico') {
     <?php require_once __DIR__ . '/../config/db.php'; ?>
 
     <?php include 'frontend/components/navbar.php'; ?>  
+    
 
     
 
@@ -72,7 +73,6 @@ if ($uri === 'favicon.ico') {
                 require_once '../routes/utilisateurs.php';
                 break;
 
-
             case 'dashboard':
                 if (!isset($_SESSION['utilisateur'])) {
                         header('Location: /login');
@@ -81,6 +81,26 @@ if ($uri === 'favicon.ico') {
                 include '../views/dashboard.php';
                 break;
 
+
+                
+            case 'stage/edit':
+                    // Appeler la méthode du contrôleur pour afficher ou modifier un stage
+                require_once '../routes/stage_edit.php';  // Rediriger vers le fichier pour l'édition du stage
+                break;
+
+            case 'routes/update_soutenance.php':
+                include '../routes/update_soutenance.php';
+                break;
+                
+            case 'routes/delete_soutenance.php':
+                include '../routes/delete_soutenance.php';
+                break;
+            
+            case 'routes/assign_tuteur.php':
+                include '../routes/assign_tuteur.php';
+                break;
+    
+                
             default:
                 // Page 404
                 include 'frontend/components/header.php';

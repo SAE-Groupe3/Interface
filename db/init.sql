@@ -10,9 +10,31 @@ CREATE TABLE Utilisateur (
     email VARCHAR(100) UNIQUE NOT NULL,
     telephone VARCHAR(20),
     login VARCHAR(50) NOT NULL,
-    motdepasse VARCHAR(255) NOT NULL,
-    role VARCHAR(50) DEFAULT 'etudiant' -- Ajout de la colonne role
+    motdepasse VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE Enseignant (
+    id_enseignant INT PRIMARY KEY,
+    bureau VARCHAR(50),
+    FOREIGN KEY (id_enseignant) REFERENCES Utilisateur(Id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Etudiant (
+    id_etudiant INT PRIMARY KEY,
+    FOREIGN KEY (id_etudiant) REFERENCES Utilisateur(Id) ON DELETE CASCADE
+);
+
+CREATE TABLE Secretaire (
+    id_secretaire INT PRIMARY KEY,
+    FOREIGN KEY (id_secretaire) REFERENCES Utilisateur(Id) ON DELETE CASCADE
+);
+
+CREATE TABLE Tuteur_Entreprise (
+    id_tuteur_entreprise INT PRIMARY KEY,
+    FOREIGN KEY (id_tuteur_entreprise) REFERENCES Utilisateur(Id) ON DELETE CASCADE
+);
+
 
 -- 2. Création de la table Entreprise
 CREATE TABLE Entreprise (
@@ -94,15 +116,10 @@ CREATE TABLE Jury (
     FOREIGN KEY (id_enseignant) REFERENCES Utilisateur(Id)
 );
 
--- 10. Création de la table Enseignant
-CREATE TABLE Enseignant (
-    Id_Enseignant SERIAL PRIMARY KEY,
-    Bureau VARCHAR(50)
-);
-
--- 11. Création de la table Administrateur
+-- 10. Création de la table Administrateur
 CREATE TABLE Administrateur (
-    Id_Administrateur SERIAL PRIMARY KEY
+    Id_Administrateur SERIAL PRIMARY KEY,
+    CONSTRAINT fk_utilisateur FOREIGN KEY (Id_Administrateur) REFERENCES Utilisateur(Id) ON DELETE CASCADE
 );
 
 -- Création de la table Fichiers
@@ -116,20 +133,81 @@ CREATE TABLE Fichiers (
 );
 
 
--- Insertion de quelques utilisateurs de test avec mot de passe haché
-INSERT INTO Utilisateur (nom, prenom, email, telephone, login, motdepasse, role) VALUES
-('Dupont', 'Jean', 'jean.dupont@example.com', '0601020304', 'jdupont', crypt('password123', gen_salt('bf')), 'admin'),
-('Martin', 'Claire', 'claire.martin@example.com', '0605060708', 'cmartin', crypt('password123', gen_salt('bf')), 'tuteur');
+BEGIN;
 
-INSERT INTO Entreprise (adresse, code_postal, ville, indicationVisite, tel) VALUES
-('123 Rue de Paris', '75001', 'Paris', '1er étage', '0147253648');
+-- Insérer l'admin dans la table Utilisateur
+WITH new_user AS (
+    INSERT INTO Utilisateur (nom, prenom, email, login, motdepasse, telephone) 
+    VALUES ('Admin', 'Super', 'admin@example.com', 'admin', crypt('password123', gen_salt('bf')), '0601020304')
+    RETURNING id
+)
+INSERT INTO Administrateur (Id_Administrateur) 
+SELECT id FROM new_user;
 
-INSERT INTO Stage (id_etudiant, id_tuteur_pedagogique, id_tuteur_entreprise, date_debut, date_fin, mission) VALUES
-(1, 2, 1, '2025-01-15', '2025-03-15', 'Développement d une application web');
+COMMIT;
 
-INSERT INTO TypeAction (libelle, Executant, Destinataire, delaiEnJours, ReferenceDelai, requiertDoc, LienModeleDoc) VALUES
-('Compte rendu d installation', 'Etudiant', 'Tuteur pédagogique', 7, 'date_debut', TRUE, 'modele_compte_rendu.pdf');
+BEGIN;
+
+-- Insérer les enseignants dans la table Utilisateur
+WITH new_user AS (
+    INSERT INTO Utilisateur (nom, prenom, email, login, motdepasse, telephone) 
+    VALUES 
+    ('Dupont', 'Pierre', 'enseignant1@example.com', 'enseignant1', crypt('password123', gen_salt('bf')), '0605060708'),
+    ('Martin', 'Claire', 'enseignant2@example.com', 'enseignant2', crypt('password123', gen_salt('bf')), '0608091011'),
+    ('Durand', 'Sophie', 'enseignant3@example.com', 'enseignant3', crypt('password123', gen_salt('bf')), '0612131415'),
+    ('Morel', 'Julien', 'enseignant4@example.com', 'enseignant4', crypt('password123', gen_salt('bf')), '0623242526'),
+    ('Dubois', 'Elodie', 'enseignant5@example.com', 'enseignant5', crypt('password123', gen_salt('bf')), '0634354647'),
+    ('Lemoine', 'Paul', 'enseignant6@example.com', 'enseignant6', crypt('password123', gen_salt('bf')), '0645465768')
+    RETURNING id
+)
+-- Insérer les enseignants dans la table Enseignant avec l'ID récupéré
+INSERT INTO Enseignant (id_enseignant, bureau) 
+SELECT id, 'Bureau 101' FROM new_user;
+
+COMMIT;
+
+BEGIN;
+
+-- Insérer les étudiants dans la table Utilisateur
+WITH new_user AS (
+    INSERT INTO Utilisateur (nom, prenom, email, login, motdepasse, telephone) 
+    VALUES 
+    ('Lemoine', 'Paul', 'etudiant1@example.com', 'etudiant1', crypt('password123', gen_salt('bf')), '0611223344'),
+    ('Dubois', 'Sophie', 'etudiant2@example.com', 'etudiant2', crypt('password123', gen_salt('bf')), '0612334455'),
+    ('Morel', 'Julien', 'etudiant3@example.com', 'etudiant3', crypt('password123', gen_salt('bf')), '0613445566')
+    RETURNING id
+)   
+-- Insérer les étudiants dans la table Etudiant avec l'ID récupéré
+INSERT INTO Etudiant (id_etudiant) 
+SELECT id FROM new_user;
+
+COMMIT;
+
+BEGIN;
+
+-- Insérer les tuteurs d'entreprise dans la table Utilisateur
+WITH new_user AS (
+    INSERT INTO Utilisateur (nom, prenom, email, login, motdepasse, telephone) 
+    VALUES 
+    ('Durand', 'Marc', 'tuteur1@example.com', 'tuteur1', crypt('password123', gen_salt('bf')), '0655566778'),
+    ('Martinez', 'Elodie', 'tuteur2@example.com', 'tuteur2', crypt('password123', gen_salt('bf')), '0656677889'),
+    ('Gerrar', 'Pierre', 'tuteur3@example.com', 'tuteur3', crypt('password123', gen_salt('bf')), '0657788990')
+    RETURNING id
+)
+-- Insérer les tuteurs dans la table Tuteur_Entreprise avec l'ID récupéré
+INSERT INTO Tuteur_Entreprise (id_tuteur_entreprise) 
+SELECT id FROM new_user;
+
+COMMIT;
 
 
-INSERT INTO Fichiers (id_stage, nom_fichier, chemin_fichier) VALUES
-(1, 'rapport_stage.pdf', '/uploads/stage_1/rapport_stage.pdf');
+-- Ajouter des stages dans la table Stage
+-- Insérer des stages dans la table Stage
+INSERT INTO Stage (id_etudiant, id_tuteur_pedagogique, id_tuteur_entreprise, mission, date_debut, date_fin)
+VALUES
+(8, 2, 11, 'Développement d''une application mobile', '2025-02-01', '2025-04-30'),
+(9, 3, 12, 'Analyse de données et reporting', '2025-03-01', '2025-05-30'),  
+(10, 4, 13, 'Déploiement d''un système d''information', '2025-04-01', '2025-06-30'),
+(8, 5, 11, 'Conception et optimisation d''une base de données', '2025-05-01', '2025-07-31'),
+(9, 6, 12, 'Développement d''un chatbot pour support client', '2025-06-01', '2025-08-31'),
+(10, 7, 13, 'Mise en place d''un système de supervision réseau', '2025-07-01', '2025-09-30');

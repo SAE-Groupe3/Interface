@@ -22,6 +22,15 @@ $idStage = (int)$_GET['id'];
 // Créer une instance du contrôleur StageController
 $controller = new StageController($pdo);
 
-// Afficher les détails du stage
-$controller->details($idStage);  // Appeler la méthode details() pour afficher les informations du stage
+// Si la requête est de type POST, c'est une tentative de modification
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $idTuteurPedagogique = (int)$_POST['id_tuteur_pedagogique'];
+
+    // Appeler la méthode assignTuteur() du contrôleur pour mettre à jour le tuteur
+    $controller->assignTuteur($idStage, $idTuteurPedagogique);
+} else {
+    // Si la requête n'est pas POST, afficher la page d'édition du stage
+    // Appeler la méthode edit() pour afficher le formulaire d'édition
+    $controller->edit($idStage);  // Utiliser la méthode edit() pour afficher le formulaire d'édition
+}
 ?>

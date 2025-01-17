@@ -1,9 +1,25 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['utilisateur'])) {
+    echo "Utilisateur non connecté.";
+    exit;
+}
+
+// Récupérer les informations de l'utilisateur
+$utilisateur = $_SESSION['utilisateur'];
+?>
+
 <div class="container mx-auto px-6 md:px-12 py-12 bg-white shadow-md rounded-lg mt-12">
     <h1 class="text-4xl font-bold text-indigo-900 mb-4">Bienvenue dans votre tableau de bord !</h1>
     <p class="text-gray-700 text-lg mb-6">
-        Vous êtes connecté en tant que <strong><?= htmlspecialchars($_SESSION['utilisateur']['nom']) ?></strong> 
-        (<em><?= htmlspecialchars($_SESSION['utilisateur']['role']) ?></em>).
-    </p>
+    Vous êtes connecté en tant que 
+    <strong><?= htmlspecialchars($utilisateur['email'] ?? 'Utilisateur') ?></strong>
+    (<em><?= htmlspecialchars($utilisateur['role'] ?? 'Non défini') ?></em>).
+</p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Boutons du dashboard -->
@@ -11,7 +27,7 @@
             📁 Voir les stages
         </a>
 
-        <?php if ($_SESSION['utilisateur']['role'] === 'admin'): ?>
+        <?php if ($utilisateur['role'] === 'admin'): ?>
             <a href="/utilisateurs" class="bg-indigo-900 text-white px-6 py-4 rounded-lg shadow hover:bg-indigo-700 text-center">
                 👥 Gérer les utilisateurs
             </a>

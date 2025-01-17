@@ -2,47 +2,51 @@
 class Utilisateur {
     private $pdo;
 
+    // Constructeur pour injecter PDO
     public function __construct($pdo) {
         $this->pdo = $pdo;
     }
 
+    // Méthode pour vérifier les identifiants
     public function verifierIdentifiants($email, $password) {
-        $query = $this->pdo->prepare("
-            SELECT id, nom, prenom, email, telephone, login, role, motdepasse
-            FROM utilisateur
-            WHERE email = :email
-        ");
-    
+        $query = $this->pdo->prepare("SELECT id, email, motdepasse FROM Utilisateur WHERE email = :email");
         $query->execute(['email' => $email]);
         $utilisateur = $query->fetch(PDO::FETCH_ASSOC);
-    
-        if ($utilisateur && hash_equals($utilisateur['motdepasse'], crypt($password, $utilisateur['motdepasse']))) {
-            // Supprimer le mot de passe des résultats pour des raisons de sécurité
-            unset($utilisateur['motdepasse']);
+
+        if ($utilisateur && password_verify($password, $utilisateur['motdepasse'])) {
+            // Assurez-vous que $_SESSION['utilisateur'] est bien initialisé
+            if (isset($_SESSION['utilisateur']) && isset($_SESSION['utilisateur']['role'])) {
+                var_dump($_SESSION['utilisateur']['role']);
+            } else {
+                var_dump("La clé 'role' ou 'utilisateur' n'est pas définie dans la session.");
+            }
+        
             return $utilisateur;
         }
-    
         return false;
     }
-    
-    public function getAllUtilisateurs() {
-        $query = $this->pdo->query("
-            SELECT id, nom, prenom, email, role 
-            FROM utilisateur
-            ORDER BY role, nom
-        ");
-        return $query->fetchAll(PDO::FETCH_ASSOC);
-    }
 
-    public function getTuteurs() {
-        $query = $this->pdo->query("
-            SELECT id, nom, prenom, email, role 
-            FROM utilisateur
-            WHERE role = 'tuteur'
-            ORDER BY nom
-        ");
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+    // Méthode pour récupérer le rôle
+    public function getUserRole($userId) {
+        $roles = [
+            'Administrateur' => 'Administrateur',
+            'Etudiant' => 'Etudiant',
+            'Enseignant' => 'Enseignant',
+            'Tuteur_Entreprise' => 'Tuteur d\'Entreprise'
+        ];
+    
+        foreach ($roles as $table => $role) {
+            $stmt = $this->pdo->prepare("SELECT 1 FROM $table WHERE id_$table = :userId");
+            $stmt->execute(['userId' => $userId]);
+    
+            if ($stmt->fetch()) {
+                return $role; // Retourne le rôle trouvé
+            }
+        }
+    
+        return null; // Aucun rôle trouvé
     }
     
 }
 
+?>
