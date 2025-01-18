@@ -27,11 +27,12 @@ if ($uri === 'favicon.ico') {
     <!-- Contenu principal avec padding bas -->
     <main class="flex-grow pb-20 mb-20">
         <?php
-        
+        require_once '../utils/auth_helpers.php';
         // Gestion des routes
         $uriParts = explode('?', $uri); // Séparer le chemin de la query string
         $path = $uriParts[0]; // Utiliser le chemin sans les paramètres
-
+       
+        
         switch ($path) {
             case '':
             case 'index.php':
@@ -72,7 +73,7 @@ if ($uri === 'favicon.ico') {
                 // Liste des utilisateurs
                 require_once '../routes/utilisateurs.php';
                 break;
-
+            
             case 'dashboard':
                 if (!isset($_SESSION['utilisateur'])) {
                         header('Location: /login');
@@ -88,17 +89,22 @@ if ($uri === 'favicon.ico') {
                 require_once '../routes/stage_edit.php';  // Rediriger vers le fichier pour l'édition du stage
                 break;
 
-            case 'routes/update_soutenance.php':
-                include '../routes/update_soutenance.php';
-                break;
-                
-            case 'routes/delete_soutenance.php':
-                include '../routes/delete_soutenance.php';
-                break;
+            case 'submit_request': // Vue pour l'étudiant
+                    requireRole('Etudiant'); // Vérification du rôle
+                    require_once '../views/submit_request.php';
+                    break;
             
-            case 'routes/assign_tuteur.php':
-                include '../routes/assign_tuteur.php';
-                break;
+            case 'manage_requests':
+                    require_once '../routes/manage_request.php';
+                    break;
+            
+            case 'submit_stage_request': // Traitement du formulaire étudiant
+                    require_once '../routes/submit_stage_request.php';
+                    break;
+            
+            case 'validate_request':
+                    require_once '../routes/validate_request.php';
+                    break;
     
                 
             default:

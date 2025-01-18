@@ -1,93 +1,56 @@
+<?php
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['utilisateur'])) {
+    header("Location: /login");
+    exit();
+}
+
+// Récupérer le rôle de l'utilisateur
+$role = $_SESSION['utilisateur']['role'];
+?>
+
 <div class="container mx-auto py-8 px-4">
-    <!-- Titre + Bouton d'ajout alignés sur la même ligne -->
-    <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Liste des Stages</h2>
-        <button 
-            class="inline-flex items-center px-6 py-2 text-white bg-indigo-600 
-                   rounded-lg hover:bg-indigo-700 transition-colors duration-200 
-                   focus:outline-none focus:ring focus:ring-indigo-300"
-        >
-            <!-- Icône SVG (optionnel) -->
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            Ajouter un Stage
-        </button>
-    </div>
+    <!-- Titre principal -->
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Liste des Stages</h2>
 
     <?php if (empty($stages)) : ?>
         <p class="text-center text-xl text-gray-600">Aucun stage disponible.</p>
     <?php else : ?>
-        <!-- Carte blanche pour le tableau -->
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200 table-auto">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            ID
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Mission
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Date Début
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Date Fin
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Étudiant
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Tuteur Pédagogique
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Tuteur Entreprise
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    <?php foreach ($stages as $stage) : ?>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?= htmlspecialchars($stage['id_stage']) ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?= htmlspecialchars($stage['mission']) ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?= htmlspecialchars($stage['date_debut']) ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?= htmlspecialchars($stage['date_fin']) ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?= htmlspecialchars($stage['etudiant'] ?? 'Non attribué') ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?= htmlspecialchars($stage['tuteur_pedagogique'] ?? 'Non attribué') ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?= htmlspecialchars($stage['tuteur_entreprise'] ?? 'Non attribué') ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <!-- Boutons d'action -->
-                                <div class="inline-flex g2">
-                                    <button class="p-4 text-white bg-blue-500 hover:bg-blue-600 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">
-                                        Détails
-                                    </button>
-                                    <button class="p-4 text-white bg-red-500 hover:bg-red-600 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400">
-                                        Supprimer
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+        <div class="space-y-6">
+            <?php foreach ($stages as $stage) : ?>
+                <div class="bg-white shadow-md rounded-lg p-6">
+                    <p class="text-gray-800"><strong>ID :</strong> <?= htmlspecialchars($stage['id_stage']) ?></p>
+                    <p class="text-gray-800"><strong>Mission :</strong> <?= htmlspecialchars($stage['mission']) ?></p>
+                    <p class="text-gray-800"><strong>Date Début :</strong> <?= htmlspecialchars($stage['date_debut']) ?></p>
+                    <p class="text-gray-800"><strong>Date Fin :</strong> <?= htmlspecialchars($stage['date_fin']) ?></p>
+                    <p class="text-gray-800"><strong>Étudiant :</strong> <?= htmlspecialchars($stage['etudiant'] ?? 'Non attribué') ?></p>
+                    <p class="text-gray-800"><strong>Tuteur Pédagogique :</strong> <?= htmlspecialchars($stage['tuteur_pedagogique'] ?? 'Non attribué') ?></p>
+                    <p class="text-gray-800"><strong>Tuteur Entreprise :</strong> <?= htmlspecialchars($stage['tuteur_entreprise'] ?? 'Non attribué') ?></p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="/stage/details?id=<?= urlencode($stage['id_stage']) ?>"
+                           class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                            Détails
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <!-- Bouton pour faire une demande (visible uniquement pour les étudiants) -->
+    <div class="mt-8 text-center space-y-4">
+        <?php if ($role === 'Etudiant') : ?>
+            <a href="/submit_request" 
+               class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                Faire une demande de stage
+            </a>
+        <?php endif; ?>
+
+        <?php if ($role === 'Administrateur') : ?>
+            <a href="/manage_requests" 
+               class="px-6 py-3 bg-green-600 text-black rounded-lg hover:bg-green-700 transition">
+                Gérer les demandes de stage
+            </a>
+        <?php endif; ?>
+    </div>
 </div>

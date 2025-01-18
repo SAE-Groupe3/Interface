@@ -50,8 +50,8 @@ CREATE TABLE Entreprise (
 CREATE TABLE Stage (
     Id_Stage SERIAL PRIMARY KEY,
     id_etudiant INT NOT NULL,
-    id_tuteur_pedagogique INT NOT NULL,
-    id_tuteur_entreprise INT NOT NULL,
+    id_tuteur_pedagogique INT,
+    id_tuteur_entreprise INT,
     date_debut DATE NOT NULL,
     date_fin DATE NOT NULL,
     mission TEXT NOT NULL,
@@ -60,19 +60,21 @@ CREATE TABLE Stage (
     FOREIGN KEY (id_etudiant) REFERENCES Utilisateur(Id),
     FOREIGN KEY (id_tuteur_pedagogique) REFERENCES Utilisateur(Id),
     FOREIGN KEY (id_tuteur_entreprise) REFERENCES Utilisateur(Id)
-);
+);  
 
--- 4. Création de la table TypeAction
-CREATE TABLE TypeAction (
-    Id_TypeAction SERIAL PRIMARY KEY,
-    libelle VARCHAR(100) NOT NULL,
-    Executant VARCHAR(50),
-    Destinataire VARCHAR(50),
-    delaiEnJours INT,
-    ReferenceDelai VARCHAR(100),
-    requiertDoc BOOLEAN,
-    LienModeleDoc VARCHAR(255)
-);
+
+
+    -- 4. Création de la table TypeAction
+    CREATE TABLE TypeAction (
+        Id_TypeAction SERIAL PRIMARY KEY,
+        libelle VARCHAR(100) NOT NULL,
+        Executant VARCHAR(50),
+        Destinataire VARCHAR(50),
+        delaiEnJours INT,
+        ReferenceDelai VARCHAR(100),
+        requiertDoc BOOLEAN,
+        LienModeleDoc VARCHAR(255)
+    );
 
 -- 5. Création de la table Action
 CREATE TABLE Action (
@@ -82,7 +84,8 @@ CREATE TABLE Action (
     date_realisation DATE,
     lienDocument VARCHAR(255),
     FOREIGN KEY (Id_Stage) REFERENCES Stage(Id_Stage),
-    FOREIGN KEY (Id_TypeAction) REFERENCES TypeAction(Id_TypeAction)
+    FOREIGN KEY (Id_TypeAction) REFERENCES TypeAction(Id_TypeAction),
+    CONSTRAINT unique_stage_action UNIQUE (Id_Stage, Id_TypeAction) -- Contrainte d'unicité
 );
 
 -- 6. Création de la table Département
@@ -203,6 +206,24 @@ COMMIT;
 
 -- Ajouter des stages dans la table Stage
 -- Insérer des stages dans la table Stage
+
+
+INSERT INTO TypeAction (libelle, Executant, Destinataire, delaiEnJours, ReferenceDelai, requiertDoc, LienModeleDoc)
+VALUES (
+    'Demande de Stage',         -- Libellé de l'action
+    'Etudiant',                -- Exécutant de l'action
+    'Administrateur',          -- Destinataire de l'action
+    7,                         -- Délai en jours pour la validation
+    'Date de soumission',      -- Référence pour le calcul du délai
+    FALSE,                     -- Pas de document requis
+    NULL                       -- Pas de modèle de document
+);
+
+INSERT INTO TypeAction (libelle, Executant, Destinataire, delaiEnJours, ReferenceDelai, requiertDoc, LienModeleDoc)
+VALUES
+('Validation de Stage', 'Administrateur', 'Etudiant', 0, 'Date de validation', FALSE, NULL);
+
+
 INSERT INTO Stage (id_etudiant, id_tuteur_pedagogique, id_tuteur_entreprise, mission, date_debut, date_fin)
 VALUES
 (8, 2, 11, 'Développement d''une application mobile', '2025-02-01', '2025-04-30'),
@@ -211,3 +232,14 @@ VALUES
 (8, 5, 11, 'Conception et optimisation d''une base de données', '2025-05-01', '2025-07-31'),
 (9, 6, 12, 'Développement d''un chatbot pour support client', '2025-06-01', '2025-08-31'),
 (10, 7, 13, 'Mise en place d''un système de supervision réseau', '2025-07-01', '2025-09-30');
+
+
+
+INSERT INTO Action (Id_Stage, Id_TypeAction, date_realisation, lienDocument)
+VALUES
+(1, 2, NOW(), NULL), -- Validation du stage 1
+(2, 2, NOW(), NULL), -- Validation du stage 2
+(3, 2, NOW(), NULL), -- Validation du stage 3
+(4, 2, NOW(), NULL), -- Validation du stage 4
+(5, 2, NOW(), NULL), -- Validation du stage 5
+(6, 2, NOW(), NULL); -- Validation du stage 6

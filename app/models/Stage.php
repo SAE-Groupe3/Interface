@@ -7,41 +7,58 @@ class Stage {
         $this->pdo = $pdo;
     }
 
-    public function getAllStages() {
+    public function getAllEnseignants() {
         $query = $this->pdo->query("
-            SELECT 
-                Stage.id_stage,
-                Stage.mission,
-                Stage.date_debut,
-                Stage.date_fin,
-                CONCAT(e.nom, ' ', e.prenom) AS etudiant,
-                CONCAT(t.nom, ' ', t.prenom) AS tuteur_pedagogique,
-                CONCAT(te.nom, ' ', te.prenom) AS tuteur_entreprise
-            FROM Stage
-            LEFT JOIN Utilisateur e ON Stage.id_etudiant = e.id
-            LEFT JOIN Utilisateur t ON Stage.id_tuteur_pedagogique = t.id
-            LEFT JOIN Utilisateur te ON Stage.id_tuteur_entreprise = te.id
+            SELECT id, nom, prenom, email
+            FROM Utilisateur
+            JOIN Enseignant ON Utilisateur.id = Enseignant.id_enseignant
         ");
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+
+    public function getAllStages() {
+        $query = $this->pdo->query("
+            SELECT 
+                Stage.id_stage, 
+                Stage.mission, 
+                Stage.date_debut, 
+                Stage.date_fin, 
+                CONCAT(Utilisateur.nom, ' ', Utilisateur.prenom) AS etudiant
+            FROM Stage
+            JOIN Utilisateur ON Stage.id_etudiant = Utilisateur.id
+            WHERE Stage.id_stage IN (
+                SELECT Id_Stage 
+                FROM Action 
+                WHERE Id_TypeAction = (
+                    SELECT Id_TypeAction FROM TypeAction WHERE libelle = 'Validation de Stage'
+                )
+            )
+        ");
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 
     public function getStagesByEtudiantId($idEtudiant) {
         $query = $this->pdo->prepare("
             SELECT 
-                Stage.id_stage,
-                Stage.mission,
-                Stage.date_debut,
-                Stage.date_fin,
-                CONCAT(e.nom, ' ', e.prenom) AS etudiant,
-                CONCAT(t.nom, ' ', t.prenom) AS tuteur_pedagogique,
-                CONCAT(te.nom, ' ', te.prenom) AS tuteur_entreprise
+                Stage.id_stage, 
+                Stage.mission, 
+                Stage.date_debut, 
+                Stage.date_fin, 
+                CONCAT(Utilisateur.nom, ' ', Utilisateur.prenom) AS etudiant
             FROM Stage
-            LEFT JOIN Utilisateur e ON Stage.id_etudiant = e.id
-            LEFT JOIN Utilisateur t ON Stage.id_tuteur_pedagogique = t.id
-            LEFT JOIN Utilisateur te ON Stage.id_tuteur_entreprise = te.id
-            WHERE Stage.id_etudiant = :idEtudiant
+            JOIN Utilisateur ON Stage.id_etudiant = Utilisateur.id
+            WHERE Stage.id_etudiant = :id_etudiant
+            AND Stage.id_stage IN (
+                SELECT Id_Stage 
+                FROM Action 
+                WHERE Id_TypeAction = (
+                    SELECT Id_TypeAction FROM TypeAction WHERE libelle = 'Validation de Stage'
+                )
+            )
         ");
-        $query->execute(['idEtudiant' => $idEtudiant]);
+        $query->execute(['id_etudiant' => $idEtudiant]);
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -92,6 +109,79 @@ class Stage {
         $query->execute(['idStage' => $idStage]);
         return $query->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function createStage($idEtudiant, $mission, $dateDebut, $dateFin) {
+        // Créer le stage avec un statut "en attente"
+        $query = $this->pdo->prepare("
+            INSERT INTO Stage (id_etudiant, mission, date_debut, date_fin)
+            VALUES (:id_etudiant, :mission, :date_debut, :date_fin)
+        ");
+        $query->execute([
+            'id_etudiant' => $idEtudiant,
+            'mission' => $mission,
+            'date_debut' => $dateDebut,
+            'date_fin' => $dateFin,
+        ]);
+    
+        $idStage = $this->pdo->lastInsertId();
+    
+        // Créer une action associée à la demande
+        $this->addAction($idStage, 1); // 1 = ID du type d'action "Demande de Stage"
+        return $idStage;
+    }
+    
+    public function addAction($idStage, $idTypeAction, $lienDocument = null) {
+        $query = $this->pdo->prepare("
+            INSERT INTO Action (Id_Stage, Id_TypeAction, date_realisation, lienDocument)
+            VALUES (:id_stage, :id_type_action, NOW(), :lien_document)
+        ");
+        $query->execute([
+            'id_stage' => $idStage,
+            'id_type_action' => $idTypeAction,
+            'lien_document' => $lienDocument
+        ]);
+    }
+    
+
+    public function getStageRequests() {
+        $query = $this->pdo->query("
+            SELECT 
+                Action.Id_Action,
+                Stage.id_stage,
+                Stage.mission,
+                Stage.date_debut,
+                Stage.date_fin,
+                CONCAT(Utilisateur.nom, ' ', Utilisateur.prenom) AS etudiant
+            FROM Action
+            JOIN Stage ON Action.Id_Stage = Stage.Id_Stage
+            JOIN Utilisateur ON Stage.id_etudiant = Utilisateur.id
+            WHERE Action.Id_TypeAction = (
+                SELECT Id_TypeAction FROM TypeAction WHERE libelle = 'Demande de Stage'
+            )
+        ");
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
+    public function validateRequest($idAction) {
+        $query = $this->pdo->prepare("
+            UPDATE Action
+            SET Id_TypeAction = (
+                SELECT Id_TypeAction FROM TypeAction WHERE libelle = 'Validation de Stage'
+            )
+            WHERE Id_Action = :id_action
+        ");
+        $query->execute(['id_action' => $idAction]);
+    }
+    
+    public function rejectRequest($idAction) {
+        $query = $this->pdo->prepare("
+            DELETE FROM Action
+            WHERE Id_Action = :id_action
+        ");
+        $query->execute(['id_action' => $idAction]);
+    }
 }
+
 
 ?>
