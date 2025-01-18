@@ -8,6 +8,9 @@
     <!-- Tailwind CSS -->
     <link href="/frontend/output.css" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 

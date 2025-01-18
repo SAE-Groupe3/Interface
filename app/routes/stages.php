@@ -15,6 +15,9 @@ $utilisateur = $_SESSION['utilisateur'];
 $role = $utilisateur['role'];
 $userId = $utilisateur['id'];
 
+
 $stageController = new StageController($pdo);
+
 $stageController->afficherStages($role, $userId);
+
 ?>

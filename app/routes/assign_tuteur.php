@@ -3,8 +3,7 @@ require_once '../config/db.php';
 require_once '../models/Stage.php';
 
 // Vérifie que l'utilisateur est connecté et a le rôle approprié
-session_start();
-if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur']['role'] !== 'admin') {
+if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur']['role'] !== 'Administrateur') {
     header('Location: /login');
     exit();
 }

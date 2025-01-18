@@ -27,9 +27,9 @@ $utilisateur = $_SESSION['utilisateur'];
             📁 Voir les stages
         </a>
 
-        <?php if ($utilisateur['role'] === 'admin'): ?>
-            <a href="/utilisateurs" class="bg-indigo-900 text-white px-6 py-4 rounded-lg shadow hover:bg-indigo-700 text-center">
-                👥 Gérer les utilisateurs
+        <?php if ($utilisateur['role'] === 'Administrateur'): ?>
+            <a href="/manage_requests" class="bg-indigo-900 text-white px-6 py-4 rounded-lg shadow hover:bg-indigo-700 text-center">
+                👥 Gérer les demandes de stages
             </a>
         <?php endif; ?>
 

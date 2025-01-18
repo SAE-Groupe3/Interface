@@ -81,8 +81,14 @@ if ($uri === 'favicon.ico') {
                     }
                 include '../views/dashboard.php';
                 break;
-
-
+            
+            case 'routes/assign_tuteur':
+                include '../routes/assign_tuteur.php';
+                break;
+            
+            case 'routes/assign_tuteur_entreprise':
+                include '../routes/assign_tuteur_entreprise.php';
+                break;
                 
             case 'stage/edit':
                     // Appeler la méthode du contrôleur pour afficher ou modifier un stage
@@ -106,7 +112,25 @@ if ($uri === 'favicon.ico') {
                     require_once '../routes/validate_request.php';
                     break;
     
+            case strpos($uri, '/uploads/') === 0:
+                        // Chemin complet du fichier
+                        $filePath = __DIR__ . $uri;
                 
+                        // Vérifie si le fichier existe
+                        if (file_exists($filePath) && is_file($filePath)) {
+                            // Détecter le type MIME et envoyer le fichier
+                            $mimeType = mime_content_type($filePath);
+                            header("Content-Type: $mimeType");
+                            header("Content-Length: " . filesize($filePath));
+                            readfile($filePath);
+                            exit();
+                        } else {
+                            // Si le fichier n'existe pas, retournez une 404
+                            http_response_code(404);
+                            echo "Fichier introuvable.";
+                            exit();
+                        }
+                    
             default:
                 // Page 404
                 include 'frontend/components/header.php';

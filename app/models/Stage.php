@@ -17,16 +17,36 @@ class Stage {
     }
     
 
+        // Supprimer les stages rejetés
+    public function deleteRejectedStages() {
+        $query = $this->pdo->prepare("
+            DELETE FROM Stage
+            WHERE id_stage IN (
+                SELECT Id_Stage
+                FROM Action
+                WHERE Id_TypeAction = (
+                    SELECT Id_TypeAction
+                    FROM TypeAction
+                    WHERE libelle = 'Rejet de Stage'
+                )
+            )
+        ");
+        $query->execute();
+    }
     public function getAllStages() {
-        $query = $this->pdo->query("
+        $query = $this->pdo->prepare("
             SELECT 
                 Stage.id_stage, 
                 Stage.mission, 
                 Stage.date_debut, 
                 Stage.date_fin, 
-                CONCAT(Utilisateur.nom, ' ', Utilisateur.prenom) AS etudiant
+                CONCAT(etudiant.nom, ' ', etudiant.prenom) AS etudiant,
+                COALESCE(CONCAT(tuteur_pedagogique.nom, ' ', tuteur_pedagogique.prenom), 'Non assigné') AS tuteur_pedagogique,
+                COALESCE(CONCAT(tuteur_entreprise.nom, ' ', tuteur_entreprise.prenom), 'Non assigné') AS tuteur_entreprise
             FROM Stage
-            JOIN Utilisateur ON Stage.id_etudiant = Utilisateur.id
+            JOIN Utilisateur AS etudiant ON Stage.id_etudiant = etudiant.id
+            LEFT JOIN Utilisateur AS tuteur_pedagogique ON Stage.id_tuteur_pedagogique = tuteur_pedagogique.id
+            LEFT JOIN Utilisateur AS tuteur_entreprise ON Stage.id_tuteur_entreprise = tuteur_entreprise.id
             WHERE Stage.id_stage IN (
                 SELECT Id_Stage 
                 FROM Action 
@@ -35,67 +55,94 @@ class Stage {
                 )
             )
         ");
+    
+        $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
     
-
-    public function getStagesByEtudiantId($idEtudiant) {
-        $query = $this->pdo->prepare("
-            SELECT 
-                Stage.id_stage, 
-                Stage.mission, 
-                Stage.date_debut, 
-                Stage.date_fin, 
-                CONCAT(Utilisateur.nom, ' ', Utilisateur.prenom) AS etudiant
-            FROM Stage
-            JOIN Utilisateur ON Stage.id_etudiant = Utilisateur.id
-            WHERE Stage.id_etudiant = :id_etudiant
-            AND Stage.id_stage IN (
-                SELECT Id_Stage 
-                FROM Action 
-                WHERE Id_TypeAction = (
-                    SELECT Id_TypeAction FROM TypeAction WHERE libelle = 'Validation de Stage'
-                )
-            )
-        ");
-        $query->execute(['id_etudiant' => $idEtudiant]);
-        return $query->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // Récupérer les stages supervisés par un tuteur pédagogique
-    public function getStagesByTuteurPedagogique($idTuteur) {
-        $query = $this->pdo->prepare("
-            SELECT 
-                Stage.id_stage,
-                Stage.mission,
-                Stage.date_debut,
-                Stage.date_fin,
-                CONCAT(e.nom, ' ', e.prenom) AS etudiant,
-                CONCAT(t.nom, ' ', t.prenom) AS tuteur_pedagogique,
-                CONCAT(te.nom, ' ', te.prenom) AS tuteur_entreprise
-            FROM Stage
-            LEFT JOIN Utilisateur e ON Stage.id_etudiant = e.id
-            LEFT JOIN Utilisateur t ON Stage.id_tuteur_pedagogique = t.id
-            LEFT JOIN Utilisateur te ON Stage.id_tuteur_entreprise = te.id
-            WHERE Stage.id_tuteur_pedagogique = :idTuteur
-        ");
-        $query->execute(['idTuteur' => $idTuteur]);
-        return $query->fetchAll(PDO::FETCH_ASSOC);
-    }
     
 
+// Récupérer les stages d'un étudiant spécifique
+// Récupérer les stages d'un étudiant spécifique
+// Récupérer les stages d'un étudiant spécifique
+public function getStagesByEtudiantId($idEtudiant) {
+    $query = $this->pdo->prepare("
+        SELECT 
+            Stage.id_stage,
+            Stage.mission,
+            Stage.date_debut,
+            Stage.date_fin,
+            CONCAT(e.nom, ' ', e.prenom) AS etudiant,
+            CASE 
+                WHEN t.id IS NOT NULL THEN CONCAT(t.nom, ' ', t.prenom)
+                ELSE 'Non attribué'
+            END AS tuteur_pedagogique,
+            CASE 
+                WHEN te.id IS NOT NULL THEN CONCAT(te.nom, ' ', te.prenom)
+                ELSE 'Non attribué'
+            END AS tuteur_entreprise
+        FROM Stage
+        LEFT JOIN Utilisateur e ON Stage.id_etudiant = e.id
+        LEFT JOIN Utilisateur t ON Stage.id_tuteur_pedagogique = t.id
+        LEFT JOIN Utilisateur te ON Stage.id_tuteur_entreprise = te.id
+        WHERE Stage.id_etudiant = :idEtudiant
+          AND Stage.id_stage IN (
+              SELECT Id_Stage 
+              FROM Action 
+              WHERE Id_TypeAction = (
+                  SELECT Id_TypeAction 
+                  FROM TypeAction 
+                  WHERE libelle = 'Validation de Stage'
+              )
+          )
+    ");
+    $query->execute(['idEtudiant' => $idEtudiant]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+// Récupérer les stages supervisés par un tuteur pédagogique
+public function getStagesByTuteurPedagogique($idTuteur) {
+    $query = $this->pdo->prepare("
+        SELECT 
+            Stage.id_stage,
+            Stage.mission,
+            Stage.date_debut,
+            Stage.date_fin,
+            CONCAT(e.nom, ' ', e.prenom) AS etudiant,
+            CASE 
+                WHEN t.id IS NOT NULL THEN CONCAT(t.nom, ' ', t.prenom)
+                ELSE 'Non attribué'
+            END AS tuteur_pedagogique,
+            CASE 
+                WHEN te.id IS NOT NULL THEN CONCAT(te.nom, ' ', te.prenom)
+                ELSE 'Non attribué'
+            END AS tuteur_entreprise
+        FROM Stage
+        LEFT JOIN Utilisateur e ON Stage.id_etudiant = e.id
+        LEFT JOIN Utilisateur t ON Stage.id_tuteur_pedagogique = t.id
+        LEFT JOIN Utilisateur te ON Stage.id_tuteur_entreprise = te.id
+        WHERE Stage.id_tuteur_pedagogique = :idTuteur
+    ");
+    $query->execute(['idTuteur' => $idTuteur]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
     // Récupérer les détails d'un stage spécifique
     public function getStageById($idStage) {
         $query = $this->pdo->prepare("
             SELECT 
                 Stage.id_stage, 
                 Stage.id_tuteur_pedagogique, 
+                Stage.id_tuteur_entreprise,
                 etudiant.nom AS etudiant_nom, 
                 etudiant.prenom AS etudiant_prenom, 
                 etudiant.email AS etudiant_email, 
                 tuteur.nom AS tuteur_nom, 
                 tuteur.prenom AS tuteur_prenom, 
                 tuteur.email AS tuteur_email, 
+                entreprise.nom AS tuteur_entreprise_nom,
+                entreprise.prenom AS tuteur_entreprise_prenom,
+                entreprise.email AS tuteur_entreprise_email,
                 Stage.mission, 
                 Stage.date_debut, 
                 Stage.date_fin, 
@@ -104,11 +151,13 @@ class Stage {
             FROM Stage
             JOIN Utilisateur AS etudiant ON Stage.id_etudiant = etudiant.id
             LEFT JOIN Utilisateur AS tuteur ON Stage.id_tuteur_pedagogique = tuteur.id
+            LEFT JOIN Utilisateur AS entreprise ON Stage.id_tuteur_entreprise = entreprise.id
             WHERE Stage.id_stage = :idStage
         ");
         $query->execute(['idStage' => $idStage]);
         return $query->fetch(PDO::FETCH_ASSOC);
     }
+    
 
     public function createStage($idEtudiant, $mission, $dateDebut, $dateFin) {
         // Créer le stage avec un statut "en attente"
@@ -191,13 +240,72 @@ class Stage {
         $query->execute(['id_action' => $idAction]);
     }
     
-    public function rejectRequest($idAction) {
+    // Rejeter une demande de stage
+    public function rejectRequest($idStage) {
+        // Ajouter une action de rejet
         $query = $this->pdo->prepare("
-            DELETE FROM Action
-            WHERE Id_Action = :id_action
+            INSERT INTO Action (Id_Stage, Id_TypeAction, date_realisation)
+            VALUES (:idStage, (SELECT Id_TypeAction FROM TypeAction WHERE libelle = 'Rejet de Stage'), NOW())
         ");
-        $query->execute(['id_action' => $idAction]);
+        $query->execute(['idStage' => $idStage]);
+
+        // Supprimer les stages rejetés
+        $this->deleteRejectedStages();
     }
+
+    public function assignTuteurPedagogique($idStage, $idTuteurPedagogique) {
+        try {
+            // Vérifiez si le stage existe
+            $query = $this->pdo->prepare("SELECT COUNT(*) FROM Stage WHERE id_stage = :idStage");
+            $query->execute(['idStage' => $idStage]);
+    
+            if ($query->fetchColumn() == 0) {
+                throw new Exception("Le stage spécifié n'existe pas.");
+            }
+    
+            // Mettez à jour le tuteur pédagogique pour ce stage
+            $query = $this->pdo->prepare("
+                UPDATE Stage
+                SET id_tuteur_pedagogique = :idTuteurPedagogique
+                WHERE id_stage = :idStage
+            ");
+            $query->execute([
+                'idTuteurPedagogique' => $idTuteurPedagogique,
+                'idStage' => $idStage
+            ]);
+        } catch (Exception $e) {
+            // Gérez les erreurs et relancez-les pour le gestionnaire d'erreurs supérieur
+            throw new Exception("Erreur lors de l'assignation du tuteur pédagogique : " . $e->getMessage());
+        }
+    }
+
+    public function getAllTuteursEntreprise() {
+        $query = $this->pdo->query("
+            SELECT 
+                Utilisateur.id, 
+                Utilisateur.nom, 
+                Utilisateur.prenom, 
+                Utilisateur.email 
+            FROM Utilisateur
+            JOIN Tuteur_Entreprise ON Utilisateur.id = Tuteur_Entreprise.id_tuteur_entreprise
+        ");
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
+    public function assignTuteurEntreprise($idStage, $idTuteurEntreprise) {
+        $query = $this->pdo->prepare("
+            UPDATE Stage
+            SET id_tuteur_entreprise = :idTuteurEntreprise
+            WHERE id_stage = :idStage
+        ");
+        $query->execute([
+            'idTuteurEntreprise' => $idTuteurEntreprise,
+            'idStage' => $idStage
+        ]);
+    }
+    
+    
 }
 
 

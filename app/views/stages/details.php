@@ -6,23 +6,38 @@ $interval = $dateActuelle->diff($dateFinStage);
 $joursRestants = $interval->days;
 ?>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <script>
-    // Initialisation du compte à rebours (si countdown.js utilise cette fonction)
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialisation du compte à rebours
         startCountdown('<?= $stage['date_fin'] ?>');
+
+        // Animation du path SVG
+        anime({
+        targets: '#animated-path',
+        strokeDasharray: [0, 100], // Dessine progressivement
+        strokeDashoffset: [100, 0], // Décale progressivement
+        easing: 'easeInOutQuad', // Animation douce
+        duration: 1500, // Durée de l'animation
+        loop: true // Animation en boucle
+    });
     });
 </script>
 
 <!-- Conteneur principal -->
 <div class="container mx-auto py-8 px-4" data-aos="fade-up">
 
-    <!-- Titre principal -->
-    <h1 class="text-3xl md:text-4xl font-bold text-indigo-800 mb-8">
-        Détails du Stage
-    </h1>
+
+    <!-- Titre principal avec animation SVG -->
+    <div class="flex items-center justify-start mb-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-indigo-900 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path id="animated-path" stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m2 0a2 2 0 100-4h-1.38a1 1 0 00-.76.36l-2.83 3.17a1 1 0 01-1.5 0l-2.83-3.17a1 1 0 00-.76-.36H7a2 2 0 100 4h2m4 0v6m-4 0h4" />
+        </svg>
+        <h1 class="text-4xl font-bold font-bold text-indigo-900">Détails du Stage</h1>
+    </div>
 
     <!-- Carte contenant les informations principales du stage -->
-    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition transform hover:scale-[1.02] animate__animated animate__fadeIn" data-aos="fade-up">
+    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition transform hover:scale-[1.02] animate__animated animate__fadeIn" data-aos="fade-up">
         <!-- Étudiant -->
         <p class="text-gray-800 text-base md:text-lg mb-4">
             <strong>Étudiant : </strong>
@@ -35,6 +50,16 @@ $joursRestants = $interval->days;
             <strong>Tuteur pédagogique : </strong>
             <?= htmlspecialchars($stage['tuteur_nom'] . ' ' . $stage['tuteur_prenom']) ?> 
             (<?= htmlspecialchars($stage['tuteur_email'] ?? 'Non assigné') ?>)
+        </p>
+
+        <!-- Tuteur entreprise -->
+        <p class="text-gray-800 text-base md:text-lg mb-4">
+            <strong>Tuteur Entreprise : </strong>
+            <?= isset($stage['tuteur_entreprise_nom']) 
+                ? htmlspecialchars($stage['tuteur_entreprise_nom'] . ' ' . $stage['tuteur_entreprise_prenom']) 
+                : 'Non attribué' ?>
+            (<?= htmlspecialchars($stage['tuteur_entreprise_email'] ?? 'Non assigné') ?>)
+            
         </p>
 
         <!-- Mission -->
@@ -100,7 +125,7 @@ $joursRestants = $interval->days;
 
     <!-- Soutenance -->
     <div class="mt-12">
-        <h2 class="text-2xl font-bold text-indigo-800 mb-4">Soutenance :</h2>
+        <h2 class="text-2xl font-bold text-indigo-900 mb-4">Soutenance :</h2>
 
         <?php if ($_SESSION['utilisateur']['role'] === 'tuteur') : ?>
             <!-- Formulaire pour les tuteurs -->
@@ -158,11 +183,11 @@ $joursRestants = $interval->days;
     </div>
 
     <!-- Assigner / modifier Tuteur Pédagogique si admin ou tuteur -->
-    <?php if ($_SESSION['utilisateur']['role'] === 'admin' || $_SESSION['utilisateur']['role'] === 'tuteur'): ?>
+    <?php if ($_SESSION['utilisateur']['role'] === 'Administrateur' ): ?>
         <div class="mt-12">
-            <h2 class="text-2xl font-bold text-indigo-800 mb-4">Assigner ou Modifier le Tuteur Pédagogique :</h2>
+            <h2 class="text-2xl font-bold text-indigo-900 mb-4">Assigner ou Modifier le Tuteur Pédagogique :</h2>
 
-            <form action="/routes/assign_tuteur.php" method="POST" class="space-y-6 bg-gray-50 p-6 rounded-lg shadow">
+            <form action="/routes/assign_tuteur" method="POST" class="space-y-6 bg-gray-50 p-6 rounded-lg shadow">
                 <input type="hidden" name="id_stage" value="<?= htmlspecialchars($stage['id_stage']) ?>">
 
                 <div>
@@ -185,15 +210,50 @@ $joursRestants = $interval->days;
                 </div>
 
                 <button type="submit"
-                        class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow hover:bg-indigo-500">
+                        class="bg-indigo-900 text-white px-6 py-2 rounded-lg shadow hover:bg-indigo-500">
                     <?= isset($stage['id_tuteur_pedagogique']) ? 'Modifier le tuteur' : 'Assigner un tuteur' ?>
                 </button>
             </form>
         </div>
     <?php endif; ?>
+    
+    <?php if ($_SESSION['utilisateur']['role'] === 'Administrateur'): ?>
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold text-indigo-900 mb-4">Assigner ou Modifier le Tuteur Entreprise :</h2>
+
+        <form action="/routes/assign_tuteur_entreprise" method="POST" class="space-y-6 bg-gray-50 p-6 rounded-lg shadow">
+            <input type="hidden" name="id_stage" value="<?= htmlspecialchars($stage['id_stage']) ?>">
+
+            <div>
+                <label for="id_tuteur_entreprise" class="block text-gray-700 font-bold mb-2">
+                    Tuteur Entreprise :
+                </label>
+                <select name="id_tuteur_entreprise"
+                        id="id_tuteur_entreprise"
+                        required
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <option value="">Sélectionner un tuteur entreprise</option>
+
+                    <?php foreach ($tuteursEntreprise as $tuteurEntreprise): ?>
+                        <option value="<?= htmlspecialchars($tuteurEntreprise['id']) ?>"
+                            <?= (isset($stage['id_tuteur_entreprise']) && $tuteurEntreprise['id'] == $stage['id_tuteur_entreprise']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($tuteurEntreprise['nom'] . ' ' . $tuteurEntreprise['prenom']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <button type="submit"
+                    class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow hover:bg-indigo-500">
+                <?= isset($stage['id_tuteur_entreprise']) ? 'Modifier le tuteur entreprise' : 'Assigner un tuteur entreprise' ?>
+            </button>
+        </form>
+    </div>
+<?php endif; ?>
+
 
     <!-- Liens de navigation (Retour et Déposer un fichier) -->
-    <div class="mt-8 flex flex-wrap gap-4">
+    <div class="mt-8 flex flex-wrap space-x-4">
         <a href="/stage"
            class="bg-indigo-900 text-white px-6 py-3 rounded-lg shadow hover:bg-indigo-700 transition">
             Retour à la liste des stages
