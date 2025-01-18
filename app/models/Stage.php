@@ -130,17 +130,34 @@ class Stage {
         return $idStage;
     }
     
-    public function addAction($idStage, $idTypeAction, $lienDocument = null) {
+    public function addAction($idStage, $idTypeAction) {
+        // Vérifiez si l'action existe déjà
         $query = $this->pdo->prepare("
-            INSERT INTO Action (Id_Stage, Id_TypeAction, date_realisation, lienDocument)
-            VALUES (:id_stage, :id_type_action, NOW(), :lien_document)
+            SELECT COUNT(*) 
+            FROM Action 
+            WHERE Id_Stage = :idStage AND Id_TypeAction = :idTypeAction
         ");
         $query->execute([
-            'id_stage' => $idStage,
-            'id_type_action' => $idTypeAction,
-            'lien_document' => $lienDocument
+            'idStage' => $idStage,
+            'idTypeAction' => $idTypeAction
+        ]);
+    
+        if ($query->fetchColumn() > 0) {
+            // Si une action existe déjà, ne rien faire
+            return;
+        }
+    
+        // Insérez une nouvelle action
+        $query = $this->pdo->prepare("
+            INSERT INTO Action (Id_Stage, Id_TypeAction, date_realisation)
+            VALUES (:idStage, :idTypeAction, NOW())
+        ");
+        $query->execute([
+            'idStage' => $idStage,
+            'idTypeAction' => $idTypeAction
         ]);
     }
+    
     
 
     public function getStageRequests() {
