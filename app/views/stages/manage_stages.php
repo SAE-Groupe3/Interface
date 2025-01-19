@@ -23,4 +23,32 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+    <?php if (isset($_SESSION['success'])): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Succès',
+                text: "<?= htmlspecialchars($_SESSION['success']); ?>",
+                confirmButtonColor: '#4caf50',
+            });
+        });
+    </script>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: "<?= htmlspecialchars($_SESSION['error']); ?>",
+                confirmButtonColor: '#f44336',
+            });
+        });
+    </script>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 </div>

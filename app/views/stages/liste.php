@@ -22,7 +22,7 @@ if (!isset($_SESSION['utilisateur'])) {
             </a>
         <?php endif; ?>
         <?php if ($role === 'Administrateur') : ?>
-            <div class="p-2">
+            <div class="p-2 flex space-x-4">
             <a href="/manage_requests" 
                class="px-6 py-3 bg-indigo-900 text-white rounded-lg hover:bg-indigo-800 transition">
                 Gérer les demandes de stage

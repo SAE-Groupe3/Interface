@@ -87,14 +87,9 @@ if ($uri === 'favicon.ico') {
                 break;
                 
             case 'delete_stage':
-                    $idStage = $_GET['id'] ?? null;
-                    if ($idStage) {
-                        $stageController->supprimerStage($idStage);
-                    } else {
-                        header("Location: /manage_stages");
-                    }
-                    break;
-
+                require_once '../routes/delete_stages.php';
+                break;
+            
                     
             case 'manage_stages':
                     require_once '../routes/manage_stages.php';

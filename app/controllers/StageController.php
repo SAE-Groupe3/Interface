@@ -34,21 +34,18 @@ class StageController {
     }
 
     public function supprimerStage($idStage) {
-        if (!is_numeric($idStage)) {
-            $_SESSION['error'] = "ID de stage invalide.";
-            header("Location: /manage_stages");
-            exit();
-        }
-    
         try {
-            $this->stageModel->supprimerStage($idStage);
-            $_SESSION['message'] = "Le stage a été supprimé avec succès.";
+            $query = $this->pdo->prepare("DELETE FROM stages WHERE id = :id");
+            $query->execute(['id' => $idStage]);
+
+            if ($query->rowCount() > 0) {
+                return true; // Suppression réussie
+            } else {
+                throw new Exception("Aucun stage trouvé avec l'ID fourni.");
+            }
         } catch (Exception $e) {
-            $_SESSION['error'] = "Erreur lors de la suppression du stage : " . $e->getMessage();
+            throw new Exception("Erreur lors de la suppression : " . $e->getMessage());
         }
-    
-        header("Location: /manage_stages");
-        exit();
     }
     
     public function validateStageRequest($idAction, $isApproved) {

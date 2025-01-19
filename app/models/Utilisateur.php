@@ -32,15 +32,23 @@ class Utilisateur {
         
         // Récupérer le rôle de l'utilisateur
         public function getUserRole($userId) {
-            $roles = ['Administrateur', 'Etudiant', 'Enseignant', 'Tuteur_Entreprise'];
-            foreach ($roles as $table) {
+            $roles = [
+                'Administrateur' => 'Administrateur',
+                'Etudiant' => 'Etudiant',
+                'Enseignant' => 'Enseignant',
+                'Tuteur_Entreprise' => 'Tuteur d\'Entreprise'
+            ];
+        
+            foreach ($roles as $table => $role) {
                 $stmt = $this->pdo->prepare("SELECT 1 FROM $table WHERE id_$table = :userId");
                 $stmt->execute(['userId' => $userId]);
+        
                 if ($stmt->fetch()) {
-                    return $table; // Retourne le nom de la table comme rôle
+                    return $role; // Retourne le rôle trouvé
                 }
             }
-            return null;
+        
+            return null; // Aucun rôle trouvé
         }
 }
 

@@ -207,13 +207,33 @@ public function getStagesByTuteurPedagogique($idTuteur) {
         ]);
     }
 
-    public function supprimerStage($idStage) {
-        $query = $this->pdo->prepare("DELETE FROM Stage WHERE id_stage = :idStage");
-        $query->execute(['idStage' => $idStage]);
+    public function deleteStage($id) {
+        try {
+            // Supprimer les dépendances dans la table "action"
+            $query = $this->pdo->prepare("DELETE FROM action WHERE id_stage = :id");
+            $query->execute(['id' => $id]);
+    
+            // Supprimer le stage
+            $query = $this->pdo->prepare("DELETE FROM stage WHERE id_stage = :id");
+            $query->execute(['id' => $id]);
+    
+            return $query->rowCount() > 0; // Retourne true si une ligne a été supprimée
+        } catch (Exception $e) {
+            throw new Exception("Erreur lors de la suppression : " . $e->getMessage());
+        }
     }
     
     
     
+    
+    
+    public function deleteStageRequest($id) {
+    $query = $this->pdo->prepare("DELETE FROM demandes WHERE id = :id");
+    $query->execute(['id' => $id]);
+
+    return $query->rowCount() > 0; // Retourne true si une ligne a été supprimée
+}
+
 
     public function getStageRequests() {
         $query = $this->pdo->query("

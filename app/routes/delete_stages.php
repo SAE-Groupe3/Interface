@@ -1,26 +1,35 @@
 <?php
+// Inclure la connexion à la base de données et le modèle Stage
 require_once '../config/db.php';
 require_once '../models/Stage.php';
 
-if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur']['role'] !== 'Administrateur') {
-    header("Location: /login");
-    exit();
+// Vérification du rôle (seulement pour les administrateurs)
+require_once '../utils/auth_helpers.php';
+requireRole('Administrateur');
+
+// Vérifiez que l'ID du stage est présent
+$id = isset($_GET['id']) ? intval($_GET['id']) : null;
+
+if (!$id) {
+    $_SESSION['error'] = "ID du stage manquant ou invalide.";
+    header("Location: /manage_stages");
+    exit;
 }
 
-$idStage = $_GET['id'] ?? null;
-
-if ($idStage && is_numeric($idStage)) {
+try {
+    // Instancier le modèle Stage et supprimer le stage
     $stageModel = new Stage($pdo);
+    $deleted = $stageModel->deleteStage($id);
 
-    try {
-        $stageModel->supprimerStage($idStage);
-        $_SESSION['message'] = "Stage supprimé avec succès.";
-    } catch (Exception $e) {
-        $_SESSION['error'] = "Erreur lors de la suppression : " . $e->getMessage();
+    if ($deleted) {
+        $_SESSION['success'] = "Stage supprimé avec succès.";
+    } else {
+        $_SESSION['error'] = "Aucun stage trouvé avec cet ID.";
     }
-} else {
-    $_SESSION['error'] = "ID de stage invalide.";
+} catch (Exception $e) {
+    $_SESSION['error'] = "Erreur lors de la suppression : " . $e->getMessage();
 }
 
+// Redirection vers la page de gestion des stages
 header("Location: /manage_stages");
-exit();
+exit;

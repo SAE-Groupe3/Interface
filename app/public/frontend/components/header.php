@@ -14,6 +14,11 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Heroicons -->
+<script src="https://unpkg.com/@heroicons/vue@2.0.11/dist/heroicons.min.js"></script>
 
 
     <!-- Animate.css -->

@@ -1,4 +1,4 @@
-<footer class="bg-gray-900 text-gray-300 py-8 shadow-lg">
+<footer class="bg-indigo-900 text-gray-300 py-8 shadow-lg">
     <div class="container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Section Logo et Description -->
         <div>
@@ -14,7 +14,6 @@
             <ul class="space-y-2">
                 <li><a href="/" class="hover:text-gray-100">Accueil</a></li>
                 <li><a href="/stage" class="hover:text-gray-100">Stages</a></li>
-                <li><a href="/utilisateurs" class="hover:text-gray-100">Utilisateurs</a></li>
                 <li><a href="#faq" class="hover:text-gray-100">FAQ</a></li>
             </ul>
         </div>
