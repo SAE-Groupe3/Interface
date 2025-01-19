@@ -1,98 +1,99 @@
-# 🚀 Projet Gestion des Stages
+# 🌟 Gestion des Stages IUT - README
 
-Ce projet est une **application web PHP avec PostgreSQL** permettant de gérer les stages des étudiants. Elle offre des fonctionnalités pour gérer les utilisateurs, les stages, les actions, et les entreprises.
-
-## 📋 Prérequis
-
-Avant de commencer, assurez-vous d'avoir installé :
-- **Apache** (ou un autre serveur web compatible PHP)
-- **PHP 7.4+**
-- **PostgreSQL**
-- **Git**
-
-## ⚙️ Installation
-
-### 1️⃣ **Cloner le dépôt**
-```bash
-git clone https://github.com/ton-projet/gestion-stages.git
-cd gestion-stages
-```
-
-### 2️⃣ **Configurer la base de données PostgreSQL**
-Créez la base de données PostgreSQL en exécutant les commandes suivantes :
-```sql
-CREATE DATABASE gestion_stages;
-```
-Importez le fichier SQL fourni :
-```bash
-psql -U postgres -d gestion_stages -f chemin/vers/gestion_stages_sql.sql
-```
-
-### 3️⃣ **Configurer le fichier `.env`**
-Créez un fichier `.env` à la racine du projet avec le contenu suivant :
-```
-DB_USER=postgres
-DB_PASSWORD=ton_mot_de_passe
-DB_NAME=gestion_stages
-DB_HOST=localhost
-DB_PORT=5432
-```
-
-### 4️⃣ **Déplacer le projet dans le dossier racine du serveur Apache**
-Sur macOS :
-```bash
-sudo cp -r gestion-stages /Library/WebServer/Documents/
-```
-Sur Linux :
-```bash
-sudo cp -r gestion-stages /var/www/html/
-```
-
-### 5️⃣ **Démarrer le serveur Apache**
-Sur macOS :
-```bash
-sudo apachectl start
-```
-Sur Linux :
-```bash
-sudo service apache2 start
-```
-
-### 6️⃣ **Accéder au projet**
-Ouvrez votre navigateur et accédez à l'adresse suivante :
-```
-http://localhost/gestion-stages/public/frontend/index.html
-```
-
-## 📋 Fonctionnalités
-- Gestion des utilisateurs (création, récupération)
-- Gestion des stages (création, mise à jour, suppression)
-- Gestion des actions liées aux stages
-- Notifications automatiques
-
-## 🔒 Sécurisation
-Pour sécuriser votre application :
-1. Ne partagez jamais votre fichier `.env`.
-2. Utilisez des requêtes préparées pour éviter les attaques par injection SQL.
-3. Désactivez l'affichage des erreurs PHP en production :
-   - Modifiez le fichier **`php.ini`** :
-     ```ini
-     display_errors = Off
-     log_errors = On
-     ```
-
-## 🛠️ Déploiement en ligne
-Pour déployer votre projet en ligne :
-1. **Transférez les fichiers** sur un serveur distant via **FTP** ou **SSH**.
-2. **Configurez le serveur Apache** pour pointer vers le dossier du projet.
-3. Accédez à votre projet depuis une URL publique.
-
-## 📧 Contact
-Pour toute question, contactez :
-- **Nom** : [Votre Nom]
-- **Email** : [Votre Email]
+Bienvenue dans le projet **Gestion des Stages IUT** ! Ce document vous guidera pour cloner le projet, installer Docker et exécuter les commandes nécessaires pour démarrer rapidement.
 
 ---
 
-© 2025 Gestion des Stages. Tous droits réservés.
+## 🚀 Prérequis
 
+Avant de commencer, assurez-vous d'avoir :
+
+1. **Git** installé sur votre machine.
+2. **Docker** et **Docker Compose** installés.
+
+### 📦 Installation de Docker
+
+- Suivez [ce guide officiel Docker](https://docs.docker.com/get-docker/) pour installer Docker sur votre système.
+- Assurez-vous que Docker Compose est inclus ou installez-le séparément si nécessaire.
+
+Pour vérifier que Docker est correctement installé :
+```bash
+docker --version
+docker-compose --version
+```
+
+---
+
+## 📥 Cloner le projet
+
+Clonez ce dépôt en utilisant la commande suivante :
+
+```bash
+git clone https://github.com/votre-utilisateur/votre-repo.git
+```
+
+Déplacez-vous dans le répertoire du projet :
+
+```bash
+cd votre-repo
+```
+
+---
+
+## 🛠️ Lancer le projet avec Docker
+
+### Étape 1 : Construire les images Docker
+
+Exécutez la commande suivante pour construire les images nécessaires :
+
+```bash
+docker-compose build
+```
+
+### Étape 2 : Lancer les conteneurs
+
+Une fois la construction terminée, démarrez les services avec :
+
+```bash
+docker-compose up
+```
+
+💡 **Astuce** : Utilisez `docker-compose up -d` pour démarrer en mode détaché.
+
+### Étape 3 : Accéder à l'application
+
+- **Frontend** : [http://localhost:3000](http://localhost:3000)
+- **Backend** : [http://localhost:8000](http://localhost:8000)
+
+---
+
+## 🔧 Commandes utiles
+
+### Arrêter les conteneurs
+```bash
+docker-compose down
+```
+
+### Recréer un conteneur après des modifications
+```bash
+docker-compose up --build
+```
+
+### Vérifier les logs
+```bash
+docker-compose logs -f
+```
+
+---
+
+## 🌟 Contribution
+
+Nous accueillons toutes les contributions avec enthousiasme ! Voici comment vous pouvez aider :
+
+1. Forkez le dépôt.
+2. Créez une branche pour votre fonctionnalité ou correction de bug.
+3. Ouvrez une Pull Request.
+
+---
+
+Merci d'avoir choisi **Gestion des Stages IUT** 🎉 !
