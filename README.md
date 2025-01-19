@@ -1,4 +1,4 @@
-# 🌟 Gestion des Stages IUT - README
+# 🌟 Gestion des Stages IUT 
 
 Bienvenue dans le projet **Gestion des Stages IUT** ! Ce document vous guidera pour cloner le projet, installer Docker et exécuter les commandes nécessaires pour démarrer rapidement.
 
