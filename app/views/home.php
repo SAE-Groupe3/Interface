@@ -77,15 +77,15 @@
         <div class="space-y-6">
             <div class="bg-white shadow-md rounded-lg p-6" data-aos="fade-right">
                 <h3 class="text-lg font-bold text-indigo-900">Comment créer un compte ?</h3>
-                <p class="text-gray-600 mt-2">Pour créer un compte, cliquez sur le bouton "S'inscrire" et remplissez le formulaire avec vos informations.</p>
+                <p class="text-gray-600 mt-2">Pour créer un compte, contactez un administrateur pour qu'il vous fournisse des identifiants.</p>
             </div>
             <div class="bg-white shadow-md rounded-lg p-6" data-aos="fade-left">
                 <h3 class="text-lg font-bold text-indigo-900">Comment ajouter un stage ?</h3>
-                <p class="text-gray-600 mt-2">Accédez à la section "Stages", puis cliquez sur le bouton "Ajouter un stage". Remplissez le formulaire avec les détails du stage.</p>
+                <p class="text-gray-600 mt-2">Accédez à la section "Stages", puis cliquez sur le bouton "Ajouter un stage". Remplissez le formulaire avec les détails du stage puis attendez qu'un administrateur valide votre bordereau.</p>
             </div>
             <div class="bg-white shadow-md rounded-lg p-6" data-aos="fade-right">
                 <h3 class="text-lg font-bold text-indigo-900">Comment contacter un tuteur ?</h3>
-                <p class="text-gray-600 mt-2">Vous pouvez contacter votre tuteur directement depuis la plateforme via la section "Messages".</p>
+                <p class="text-gray-600 mt-2">Vous pouvez contacter vos tuteurs grâce à l'affichage de leurs adresses mail directement dans la section "Détails" de votre stage.</p>
             </div>
         </div>
     </div>
