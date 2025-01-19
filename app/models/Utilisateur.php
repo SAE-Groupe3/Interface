@@ -8,45 +8,40 @@ class Utilisateur {
     }
 
     // Méthode pour vérifier les identifiants
-    public function verifierIdentifiants($email, $password) {
-        $query = $this->pdo->prepare("SELECT id, email, motdepasse FROM Utilisateur WHERE email = :email");
-        $query->execute(['email' => $email]);
-        $utilisateur = $query->fetch(PDO::FETCH_ASSOC);
+    
 
-        if ($utilisateur && password_verify($password, $utilisateur['motdepasse'])) {
-            // Assurez-vous que $_SESSION['utilisateur'] est bien initialisé
-            if (isset($_SESSION['utilisateur']) && isset($_SESSION['utilisateur']['role'])) {
-                var_dump($_SESSION['utilisateur']['role']);
-            } else {
-                var_dump("La clé 'role' ou 'utilisateur' n'est pas définie dans la session.");
+        // Méthode pour trouver un utilisateur par email
+        public static function findByEmail($email, $pdo) {
+            $query = $pdo->prepare("SELECT id, email, motdepasse FROM Utilisateur WHERE email = :email");
+            $query->execute(['email' => $email]);
+            return $query->fetch(PDO::FETCH_ASSOC);
+        }
+    
+        // Vérifier les identifiants
+
+        public function verifierIdentifiants($email, $password) {
+            $query = $this->pdo->prepare("SELECT id, email, motdepasse FROM Utilisateur WHERE email = :email");
+            $query->execute(['email' => $email]);
+            $utilisateur = $query->fetch(PDO::FETCH_ASSOC);
+    
+            if ($utilisateur && password_verify($password, $utilisateur['motdepasse'])) {
+                return $utilisateur;
             }
+            return false;
+        }
         
-            return $utilisateur;
-        }
-        return false;
-    }
-
-    // Méthode pour récupérer le rôle
-    public function getUserRole($userId) {
-        $roles = [
-            'Administrateur' => 'Administrateur',
-            'Etudiant' => 'Etudiant',
-            'Enseignant' => 'Enseignant',
-            'Tuteur_Entreprise' => 'Tuteur d\'Entreprise'
-        ];
-    
-        foreach ($roles as $table => $role) {
-            $stmt = $this->pdo->prepare("SELECT 1 FROM $table WHERE id_$table = :userId");
-            $stmt->execute(['userId' => $userId]);
-    
-            if ($stmt->fetch()) {
-                return $role; // Retourne le rôle trouvé
+        // Récupérer le rôle de l'utilisateur
+        public function getUserRole($userId) {
+            $roles = ['Administrateur', 'Etudiant', 'Enseignant', 'Tuteur_Entreprise'];
+            foreach ($roles as $table) {
+                $stmt = $this->pdo->prepare("SELECT 1 FROM $table WHERE id_$table = :userId");
+                $stmt->execute(['userId' => $userId]);
+                if ($stmt->fetch()) {
+                    return $table; // Retourne le nom de la table comme rôle
+                }
             }
+            return null;
         }
-    
-        return null; // Aucun rôle trouvé
-    }
-    
 }
 
 ?>

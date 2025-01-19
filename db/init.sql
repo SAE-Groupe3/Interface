@@ -135,6 +135,16 @@ CREATE TABLE Fichiers (
     FOREIGN KEY (id_stage) REFERENCES Stage(Id_Stage) ON DELETE CASCADE
 );
 
+CREATE TABLE Notifications (
+    id_notification SERIAL PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) DEFAULT 'info', -- 'success', 'error', 'info', etc.
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(Id) ON DELETE CASCADE
+);
+
 
 BEGIN;
 

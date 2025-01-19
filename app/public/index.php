@@ -75,11 +75,7 @@ if ($uri === 'favicon.ico') {
                 break;
             
             case 'dashboard':
-                if (!isset($_SESSION['utilisateur'])) {
-                        header('Location: /login');
-                        exit();
-                    }
-                include '../views/dashboard.php';
+                require_once '../routes/dashboard.php';
                 break;
             
             case 'routes/assign_tuteur':
@@ -90,6 +86,20 @@ if ($uri === 'favicon.ico') {
                 include '../routes/assign_tuteur_entreprise.php';
                 break;
                 
+            case 'delete_stage':
+                    $idStage = $_GET['id'] ?? null;
+                    if ($idStage) {
+                        $stageController->supprimerStage($idStage);
+                    } else {
+                        header("Location: /manage_stages");
+                    }
+                    break;
+
+                    
+            case 'manage_stages':
+                    require_once '../routes/manage_stages.php';
+                    break;
+                    
             case 'stage/edit':
                     // Appeler la méthode du contrôleur pour afficher ou modifier un stage
                 require_once '../routes/stage_edit.php';  // Rediriger vers le fichier pour l'édition du stage

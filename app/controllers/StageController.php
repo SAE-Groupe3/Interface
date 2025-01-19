@@ -19,14 +19,65 @@ class StageController {
             $stages = $this->stageModel->getStagesByEtudiantId($userId);
         } elseif ($role === 'Enseignant') {
             $stages = $this->stageModel->getStagesByTuteurPedagogique($userId);
+        } elseif ($role === "Tuteur d'Entreprise") {
+            $stages = $this->stageModel->getStagesByTuteurEntreprise($userId);
         } else {
             $stages = $this->stageModel->getAllStages();
         }
-
+    
         // Inclure la vue pour afficher la liste des stages
         require_once '../views/stages/liste.php';
     }
 
+    public function getStageModel() {
+        return $this->stageModel;
+    }
+
+    public function supprimerStage($idStage) {
+        if (!is_numeric($idStage)) {
+            $_SESSION['error'] = "ID de stage invalide.";
+            header("Location: /manage_stages");
+            exit();
+        }
+    
+        try {
+            $this->stageModel->supprimerStage($idStage);
+            $_SESSION['message'] = "Le stage a été supprimé avec succès.";
+        } catch (Exception $e) {
+            $_SESSION['error'] = "Erreur lors de la suppression du stage : " . $e->getMessage();
+        }
+    
+        header("Location: /manage_stages");
+        exit();
+    }
+    
+    public function validateStageRequest($idAction, $isApproved) {
+        try {
+            $this->stageModel->validateRequest($idAction, $isApproved);
+    
+            // Récupérer les détails de la demande
+            $stage = $this->stageModel->getStageByAction($idAction);
+            $userId = $stage['id_etudiant'];
+    
+            // Créer le message de notification
+            $message = $isApproved 
+                ? "Votre demande de stage pour la mission '{$stage['mission']}' a été validée."
+                : "Votre demande de stage pour la mission '{$stage['mission']}' a été rejetée.";
+    
+            // Ajouter la notification dans la base de données
+            $this->stageModel->addNotification($userId, $message, $isApproved ? 'success' : 'error');
+    
+            $_SESSION['message'] = "La demande a été " . ($isApproved ? "validée." : "rejetée.");
+        } catch (Exception $e) {
+            $_SESSION['error'] = "Erreur : " . $e->getMessage();
+        }
+    
+        header("Location: /manage_requests");
+        exit();
+    }
+    
+    
+    
     /**
      * Afficher les détails d'un stage spécifique
      */
@@ -54,6 +105,11 @@ class StageController {
 
         // Inclure la vue des détails du stage
         require_once '../views/stages/details.php';
+    }
+
+    public function gererStages() {
+        $stages = $this->stageModel->getAllStages();
+        require_once '../views/stages/manage_stages.php';
     }
 
     /**

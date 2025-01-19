@@ -11,15 +11,51 @@ if (!isset($_SESSION['utilisateur'])) {
 
 // Récupérer les informations de l'utilisateur
 $utilisateur = $_SESSION['utilisateur'];
+// Assurez-vous que $notifications est correctement défini
+$notifications = $notifications ?? [];
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/confetti-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Récupération des notifications depuis PHP
+        const notifications = <?= json_encode($notifications) ?>;
+
+        // Affichage des notifications
+        notifications.forEach(notification => {
+            setTimeout(() => {
+                // Effet de confettis
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                // Notification avec Toastify
+                Toastify({
+                    text: notification.message,
+                    duration: 5000,
+                    close: true,
+                    gravity: "top", // Affiche en haut
+                    position: "right", // Positionne à droite
+                    backgroundColor: notification.type === "success" ? "#4caf50" : "#f44336",
+                    className: "rounded-lg shadow-lg",
+                }).showToast();
+            }, 500);
+        });
+    });
+</script>
 
 <div class="container mx-auto px-6 md:px-12 py-12 bg-white shadow-md rounded-lg mt-12">
     <h1 class="text-4xl font-bold text-indigo-900 mb-4">Bienvenue dans votre tableau de bord !</h1>
     <p class="text-gray-700 text-lg mb-6">
-    Vous êtes connecté en tant que 
-    <strong><?= htmlspecialchars($utilisateur['email'] ?? 'Utilisateur') ?></strong>
-    (<em><?= htmlspecialchars($utilisateur['role'] ?? 'Non défini') ?></em>).
-</p>
+        Vous êtes connecté en tant que 
+        <strong><?= htmlspecialchars($utilisateur['email'] ?? 'Utilisateur') ?></strong>
+        (<em><?= htmlspecialchars($utilisateur['role'] ?? 'Non défini') ?></em>).
+    </p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Boutons du dashboard -->

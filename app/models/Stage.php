@@ -206,6 +206,12 @@ public function getStagesByTuteurPedagogique($idTuteur) {
             'idTypeAction' => $idTypeAction
         ]);
     }
+
+    public function supprimerStage($idStage) {
+        $query = $this->pdo->prepare("DELETE FROM Stage WHERE id_stage = :idStage");
+        $query->execute(['idStage' => $idStage]);
+    }
+    
     
     
 
@@ -228,16 +234,42 @@ public function getStagesByTuteurPedagogique($idTuteur) {
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
     
+    public function getStagesByTuteurEntreprise($idTuteurEntreprise) {
+        $query = $this->pdo->prepare("
+            SELECT 
+                Stage.id_stage,
+                Stage.mission,
+                Stage.date_debut,
+                Stage.date_fin,
+                CONCAT(e.nom, ' ', e.prenom) AS etudiant,
+                CONCAT(tp.nom, ' ', tp.prenom) AS tuteur_pedagogique,
+                CONCAT(te.nom, ' ', te.prenom) AS tuteur_entreprise
+            FROM Stage
+            LEFT JOIN Utilisateur e ON Stage.id_etudiant = e.id
+            LEFT JOIN Utilisateur tp ON Stage.id_tuteur_pedagogique = tp.id
+            LEFT JOIN Utilisateur te ON Stage.id_tuteur_entreprise = te.id
+            WHERE Stage.id_tuteur_entreprise = :idTuteurEntreprise
+        ");
+        $query->execute(['idTuteurEntreprise' => $idTuteurEntreprise]);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 
-    public function validateRequest($idAction) {
+    public function validateRequest($idAction, $isApproved) {
         $query = $this->pdo->prepare("
             UPDATE Action
             SET Id_TypeAction = (
-                SELECT Id_TypeAction FROM TypeAction WHERE libelle = 'Validation de Stage'
+                SELECT Id_TypeAction 
+                FROM TypeAction 
+                WHERE libelle = :action
             )
             WHERE Id_Action = :id_action
         ");
-        $query->execute(['id_action' => $idAction]);
+        $actionLabel = $isApproved ? 'Validation de Stage' : 'Rejet de Stage';
+        $query->execute([
+            'action' => $actionLabel,
+            'id_action' => $idAction
+        ]);
     }
     
     // Rejeter une demande de stage
@@ -304,9 +336,74 @@ public function getStagesByTuteurPedagogique($idTuteur) {
             'idStage' => $idStage
         ]);
     }
+    public function getStageByAction($idAction) {
+        $query = $this->pdo->prepare("
+            SELECT 
+                Action.Id_Stage,
+                Stage.id_etudiant,
+                Stage.mission,
+                Stage.date_debut,
+                Stage.date_fin
+            FROM Action
+            JOIN Stage ON Action.Id_Stage = Stage.Id_Stage
+            WHERE Action.Id_Action = :idAction
+        ");
+        $query->execute(['idAction' => $idAction]);
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    
+    
+
+    public function getActionDetails($idAction) {
+        $query = $this->pdo->prepare("
+            SELECT 
+                a.Id_Action, 
+                s.id_etudiant 
+            FROM Action a
+            JOIN Stage s ON a.Id_Stage = s.Id_Stage
+            WHERE a.Id_Action = :idAction
+        ");
+        $query->execute(['idAction' => $idAction]);
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function addNotification($idUtilisateur, $message, $type = 'info') {
+        $query = $this->pdo->prepare("
+            INSERT INTO Notifications (id_utilisateur, message, type)
+            VALUES (:id_utilisateur, :message, :type)
+        ");
+        $query->execute([
+            'id_utilisateur' => $idUtilisateur,
+            'message' => $message,
+            'type' => $type,
+        ]);
+    }
+
+    public function getNotifications($idUtilisateur) {
+        $query = $this->pdo->prepare("
+            SELECT id_notification, message, type, is_read, created_at
+            FROM Notifications
+            WHERE id_utilisateur = :id_utilisateur
+            ORDER BY created_at DESC
+        ");
+        $query->execute(['id_utilisateur' => $idUtilisateur]);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function markNotificationsAsRead($idUtilisateur) {
+        $query = $this->pdo->prepare("
+            UPDATE Notifications
+            SET is_read = TRUE
+            WHERE id_utilisateur = :id_utilisateur
+        ");
+        $query->execute(['id_utilisateur' => $idUtilisateur]);
+    }
     
     
 }
+
+    
 
 
 ?>

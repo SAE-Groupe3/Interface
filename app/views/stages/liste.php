@@ -22,10 +22,15 @@ if (!isset($_SESSION['utilisateur'])) {
             </a>
         <?php endif; ?>
         <?php if ($role === 'Administrateur') : ?>
+            <div class="p-2">
             <a href="/manage_requests" 
                class="px-6 py-3 bg-indigo-900 text-white rounded-lg hover:bg-indigo-800 transition">
                 Gérer les demandes de stage
             </a>
+            <a href="/manage_stages" class="bg-indigo-900 text-white px-6 py-3 rounded-lg shadow hover:bg-indigo-700 text-center">
+                📋 Gérer les stages
+            </a>
+            </div>
         <?php endif; ?>
     </div>
 
